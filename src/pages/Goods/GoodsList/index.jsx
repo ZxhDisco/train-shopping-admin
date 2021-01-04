@@ -9,6 +9,7 @@ const { RangePicker } = DatePicker;
 const index = () => {
   const columns = [
     {
+
       title: '订单编号',
       dataIndex: 'oid',
       align: 'center',
@@ -35,16 +36,21 @@ const index = () => {
     },
     {
       title: '订单金额',
-      dataIndex: 'price',
+      d
+      ataIndex: 'price',
       align: 'center',
     },
-    {
+
       title: '操作',
       key: 'action',
       align: 'center',
       render: (text, record) => (
         <Space size="middle">
+
           <a>查看</a>
+
+         
+
           {console.log(record)}
         </Space>
       ),
@@ -54,6 +60,7 @@ const index = () => {
   const data = [
     {
       key: '1',
+
       oid: '1',
       ptime: 2020,
       orderstatus: '进行中',
@@ -81,6 +88,7 @@ const index = () => {
     pageSize: 5,
     
   };
+
   const [isShowDetail, setIsShowDetail] = useState(false);
   return (
     <PageHeaderWrapper>
@@ -102,10 +110,14 @@ const index = () => {
           <RangePicker />
           &nbsp;&nbsp;&nbsp;
           <Input placeholder="请输入订单编号/支付编号/商品名/SKU/邮箱" style={{ width: '20rem' }} />
+
+
+
           &nbsp;&nbsp;&nbsp;
           <Button type="primary">查询</Button>
           &nbsp;&nbsp;&nbsp;
           <Button>重置</Button>
+
         </Space>
 
         <Space style={{ display: `${isShowDetail ? 'flex' : 'none'}` }}>
@@ -119,6 +131,7 @@ const index = () => {
         <Table columns={columns} dataSource={data} rowSelection pagination={pagination} />
       </Card>
     </PageHeaderWrapper>
+     
   );
 };
 
