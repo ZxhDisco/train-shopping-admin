@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Table, Card, Space, Badge, Button, Select, DatePicker, Input } from 'antd';
-import styles from './index.less'
+
+import { Table, Card, Space, Badge, Button, Select, DatePicker, Input , PageHeader,Tag } from 'antd';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -23,10 +23,18 @@ const index = () => {
       title: '订单状态',
       dataIndex: 'orderstatus',
       align: 'center',
-      render: (text, record) => {
-        let res = record.orderstatus;
-        let color = res === '进行中' ? 'processing' : res === '已完成' ? 'success' : 'error';
-        return <Badge status={color} text={record.orderstatus} />;
+
+      render: (_, record) => {
+        let res = record.goodstatus;
+        let color = res === '上架中'  ? 'green' : 'red';
+        return (
+          <Space>
+        <Tag color={color} key={record.goodstatus}>
+            {record.goodstatus}
+          </Tag>
+      </Space>
+        )
+
       },
     },
     {
@@ -44,7 +52,7 @@ const index = () => {
       title: '操作',
       key: 'action',
       align: 'center',
-      render: (text, record) => (
+      render: (_, record) => (
         <Space size="middle">
 
           <a>查看</a>
