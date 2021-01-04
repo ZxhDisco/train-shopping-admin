@@ -69,6 +69,7 @@ const index = () => {
     pageSize: 5,
     
   };
+  console.log('111')
   return (
     <PageHeader title="商品列表" extra={[
         <Button key="1" type="primary" size="large">
