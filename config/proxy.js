@@ -7,6 +7,13 @@
  */
 export default {
   dev: {
+    '/api/admin/': {
+      target: 'http://laravel.frp.codefriend.top/',
+      changeOrigin: true,
+      pathRewrite: {
+        '^': '',
+      },
+    },
     '/api/': {
       target: 'https://preview.pro.ant.design',
       changeOrigin: true,

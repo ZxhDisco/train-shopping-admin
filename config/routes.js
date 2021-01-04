@@ -91,8 +91,7 @@ export default [
                 icon: 'table',
                 path: '/list',
                 component: './ListTableList',
-              },
-              
+              },           
               {
                 component: './404',
               },
