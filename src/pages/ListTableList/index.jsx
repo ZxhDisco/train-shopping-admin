@@ -1,55 +1,22 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Input, Drawer } from 'antd';
+import { Button, message, Drawer, Badge } from 'antd';
 import React, { useState, useRef } from 'react';
 import { useIntl, FormattedMessage } from 'umi';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import UpdateForm from './components/UpdateForm';
-import { queryRule, updateRule, addRule, removeRule } from './service';
+// import { queryRule, updateRule, addRule, removeRule } from './service';
+import { query as queryOrder } from '@/services/order';
+
 /**
  * 添加节点
  * @param fields
  */
 
-const handleAdd = async (fields) => {
-  const hide = message.loading('正在添加');
-
-  try {
-    await addRule({ ...fields });
-    hide();
-    message.success('添加成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('添加失败请重试！');
-    return false;
-  }
-};
 /**
  * 更新节点
  * @param fields
  */
 
-const handleUpdate = async (fields) => {
-  const hide = message.loading('正在配置');
-
-  try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
-    hide();
-    message.success('配置成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('配置失败请重试！');
-    return false;
-  }
-};
 /**
  *  删除节点
  * @param selectedRows
@@ -74,10 +41,7 @@ const handleRemove = async (selectedRows) => {
 };
 
 const TableList = () => {
-  /**
-   * 新建窗口的弹窗
-   */
-  const [createModalVisible, handleModalVisible] = useState(false);
+ 
   /**
    * 分布更新窗口的弹窗
    */
@@ -96,12 +60,12 @@ const TableList = () => {
     {
       title: (
         <FormattedMessage
-          id="pages.searchTable.updateForm.ruleName.nameLabel"
-          defaultMessage="规则名称"
+          id="pages.searchTable.orderNum"
+          defaultMessage="订单编号"
         />
       ),
-      dataIndex: 'name',
-      tip: '规则名称是唯一的 key',
+      dataIndex: 'number',
+      tip: '订单编号 ',
       render: (dom, entity) => {
         return (
           <a
@@ -116,83 +80,69 @@ const TableList = () => {
       },
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="描述" />,
-      dataIndex: 'desc',
-      valueType: 'textarea',
+      title: <FormattedMessage id="pages.searchTable.paidTime" defaultMessage="付款时间" />,
+      dataIndex: 'paid_date',
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleCallNo" defaultMessage="服务调用次数" />,
-      dataIndex: 'callNo',
-      sorter: true,
-      hideInForm: true,
-      renderText: (val) =>
-        `${val}${intl.formatMessage({
-          id: 'pages.searchTable.tenThousand',
-          defaultMessage: ' 万 ',
-        })}`,
-    },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="状态" />,
-      dataIndex: 'status',
+      title: <FormattedMessage id="pages.searchTable.orderStatus" defaultMessage="订单状态" />,
+      dataIndex: 'post_status',
       hideInForm: true,
       valueEnum: {
-        0: {
+        'wc-cancelled': {
           text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.default" defaultMessage="关闭" />
+            <Badge status="error" text="已取消" />
           ),
-          status: 'Default',
+          status: 'wc-cancelled',
         },
-        1: {
+        'wc-processing': {
           text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="运行中" />
+            <Badge status="processing" text="运行中" /> 
           ),
-          status: 'Processing',
+          status: 'wc-processing',
         },
-        2: {
+        'wc-completed': {
           text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="已上线" />
+            <Badge status="success" text="已完成" />
           ),
-          status: 'Success',
+          status: 'wc-completed',
         },
-        3: {
+        'wc-pending': {
           text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.abnormal" defaultMessage="异常" />
+            <Badge status="default" text="待处理" />  
           ),
-          status: 'Error',
+          status: 'wc-pending',
         },
       },
     },
     {
-      title: (
-        <FormattedMessage id="pages.searchTable.titleUpdatedAt" defaultMessage="上次调度时间" />
-      ),
+      title: <FormattedMessage id="pages.searchTable.fulfillment" defaultMessage="发货状态" />,
+      dataIndex: 'fulfillment_status',
+      hideInForm: true,
+      valueEnum: {
+        'fulfilled': {
+          text: (
+            <FormattedMessage id="pages.searchTable.fulfilled" defaultMessage="已发货" />
+          ),
+          status: 'fulfilled',
+        },
+        'unfulfilled': {
+          text: (
+            <FormattedMessage id="pages.searchTable.unfulfilled" defaultMessage="未发货" />
+          ),
+          status: 'unfulfilled',
+        },
+      },
+    },
+    {
+      title: <FormattedMessage id="pages.searchTable.orderAmount" defaultMessage="订单金额" />,
+      dataIndex: 'order_total',
       sorter: true,
-      dataIndex: 'updatedAt',
-      valueType: 'dateTime',
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-
-        if (`${status}` === '0') {
-          return false;
-        }
-
-        if (`${status}` === '3') {
-          return (
-            <Input
-              {...rest}
-              placeholder={intl.formatMessage({
-                id: 'pages.searchTable.exception',
-                defaultMessage: '请输入异常原因！',
-              })}
-            />
-          );
-        }
-
-        return defaultRender(item);
-      },
+      hideInForm: true,
+      renderText: (val, item) =>
+        `${item.order_currency}${val}`,
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
+      title: <FormattedMessage id="pages.searchTable.orderOption" defaultMessage="操作" />,
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -201,13 +151,12 @@ const TableList = () => {
           onClick={() => {
             handleUpdateModalVisible(true);
             setCurrentRow(record);
+            console.log(record);
           }}
         >
-          <FormattedMessage id="pages.searchTable.config" defaultMessage="配置" />
+          <FormattedMessage id="pages.searchTable.config" defaultMessage="查看" />
         </a>,
-        <a key="subscribeAlert" href="https://procomponents.ant.design/">
-          <FormattedMessage id="pages.searchTable.subscribeAlert" defaultMessage="订阅警报" />
-        </a>,
+      
       ],
     },
   ];
@@ -219,22 +168,15 @@ const TableList = () => {
           defaultMessage: '查询表格',
         })}
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="number"
         search={{
           labelWidth: 120,
         }}
-        toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              handleModalVisible(true);
-            }}
-          >
-            <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="新建" />
-          </Button>,
-        ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        toolBarRender={false}
+        request={async (params, sorter, filter) => {
+          const res = await queryOrder({ ...params, sorter, filter })
+          return { data: res.data, success: true, total:25 }
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -281,64 +223,7 @@ const TableList = () => {
           </Button>
         </FooterToolbar>
       )}
-      <ModalForm
-        title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newRule',
-          defaultMessage: '新建规则',
-        })}
-        width="400px"
-        visible={createModalVisible}
-        onVisibleChange={handleModalVisible}
-        onFinish={async (value) => {
-          const success = await handleAdd(value);
-
-          if (success) {
-            handleModalVisible(false);
-
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-      >
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.searchTable.ruleName"
-                  defaultMessage="规则名称为必填项"
-                />
-              ),
-            },
-          ]}
-          width="m"
-          name="name"
-        />
-        <ProFormTextArea width="m" name="desc" />
-      </ModalForm>
-      <UpdateForm
-        onSubmit={async (value) => {
-          const success = await handleUpdate(value);
-
-          if (success) {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={() => {
-          handleUpdateModalVisible(false);
-          setCurrentRow(undefined);
-        }}
-        updateModalVisible={updateModalVisible}
-        values={currentRow || {}}
-      />
-
+{/* 
       <Drawer
         width={600}
         visible={showDetail}
@@ -347,6 +232,7 @@ const TableList = () => {
           setShowDetail(false);
         }}
         closable={false}
+        title={'抽屉'}
       >
         {currentRow?.name && (
           <ProDescriptions
@@ -362,6 +248,7 @@ const TableList = () => {
           />
         )}
       </Drawer>
+     */}
     </PageContainer>
   );
 };

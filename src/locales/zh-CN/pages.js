@@ -52,7 +52,7 @@ export default {
   'pages.searchTable.titleUpdatedAt': '上次调度时间',
   'pages.searchTable.exception': '请输入异常原因！',
   'pages.searchTable.titleOption': '操作',
-  'pages.searchTable.config': '配置',
+  'pages.searchTable.config': '查看',
   'pages.searchTable.subscribeAlert': '订阅警报',
   'pages.searchTable.title': '查询表格',
   'pages.searchTable.new': '新建',
@@ -62,4 +62,17 @@ export default {
   'pages.searchTable.tenThousand': '万',
   'pages.searchTable.batchDeletion': '批量删除',
   'pages.searchTable.batchApproval': '批量审批',
+  'pages.searchTable.orderNum':'订单编号',
+  'pages.searchTable.paidTime':'付款时间',
+  'pages.searchTable.orderAmount':'订单金额',
+  'pages.searchTable.orderStatus':'订单状态',
+  'pages.searchTable.orderStatus.cancelled':'已关闭',
+  'pages.searchTable.orderStatus.processing':'运行中',
+  'pages.searchTable.orderStatus.completed':'已完成',
+  'pages.searchTable.orderStatus.pending':'待处理',
+  'pages.searchTable.fulfillment':'发货状态',
+  'pages.searchTable.fulfilled':'已发货',
+  'pages.searchTable.unfulfilled':'未发货',
+  'pages.searchTable.orderOption': '操作'
+
 };
