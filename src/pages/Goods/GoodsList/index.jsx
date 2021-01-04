@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Table, Card, Space, Badge, Button, Select, DatePicker, Input , PageHeader } from 'antd';
-import styles from './index.less'
-
+import { Table, Card, Space, Badge, Button, Select, DatePicker, Input , PageHeader,Tag } from 'antd';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
@@ -22,26 +20,23 @@ const index = () => {
       title: '状态',
       dataIndex: 'goodstatus',
       align: 'center',
-      render: (text, record) => {
+      render: (_, record) => {
         let res = record.goodstatus;
-        let color = res === '上架中'  ? '155,187,28' : '247,18,21';
-        let backColor = res === '上架中' ? '229,248,231': '247,228,231'
-        let fontColor = res === '上架中' ? '28,108,26': '201,18,21'
-        return <span style={{display:"inline-block",
-        fontSize:'12px',
-        border:`1px solid rgb(${color})`,
-        padding:"5px 10px",borderRadius:"5px",
-        backgroundColor:`rgb(${backColor})`,
-        color:`rgb(${fontColor})`}}>
-          {record.goodstatus}
-          </span>
+        let color = res === '上架中'  ? 'green' : 'red';
+        return (
+          <Space>
+        <Tag color={color} key={record.goodstatus}>
+            {record.goodstatus}
+          </Tag>
+      </Space>
+        )
       },
     },
     {
       title: '操作',
       key: 'action',
       align: 'center',
-      render: (text, record) => (
+      render: (_, record) => (
         <Space size="middle">
           <a>编辑</a>
           {console.log(record)}
