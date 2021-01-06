@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Table, Card, Space, Button, Select, Input, Tag, Modal, Form } from 'antd';
+import { connect } from 'umi';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Table, Card, Space, Badge, Button, Select, DatePicker, Input , PageHeader,Tag } from 'antd';
+import GoodModal from './components/GoodMoadl';
 const { Option } = Select;
-const { RangePicker } = DatePicker;
-
-const index = () => {
+const index = ({ dispatch, productData }) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalTitle, setModalTitle] = useState('');
+  const [Record, setRecord] = useState(undefined);
+  useEffect(() => {
+    dispatch({
+      type: 'goodList/getProducts',
+    });
+  }, []);
   const columns = [
     {
       title: '商品',
@@ -18,18 +26,19 @@ const index = () => {
     },
     {
       title: '状态',
-      dataIndex: 'goodstatus',
+      dataIndex: 'post_status',
       align: 'center',
       render: (_, record) => {
-        let res = record.goodstatus;
-        let color = res === '上架中'  ? 'green' : 'red';
+        let res = record.post_status;
+        let color = res === 'publish' ? 'green' : 'red';
+        let status = res === 'publish' ? '上架中' : '已下架';
         return (
           <Space>
-        <Tag color={color} key={record.goodstatus}>
-            {record.goodstatus}
-          </Tag>
-      </Space>
-        )
+            <Tag color={color} key={record.goodstatus}>
+              {status}
+            </Tag>
+          </Space>
+        );
       },
     },
     {
@@ -38,45 +47,66 @@ const index = () => {
       align: 'center',
       render: (_, record) => (
         <Space size="middle">
-          <a>编辑</a>
-          {console.log(record)}
+          <a
+            onClick={() => {
+              modifyGood(record);
+            }}
+          >
+            编辑
+          </a>
         </Space>
       ),
     },
   ];
 
-  const data = [
-    {
-      key: '1',
-      title: '2020秋季新款上衣',
-      goodcategory: '衣服',
-      goodstatus: '已下架',
-    },
-    {
-      key: '2',
-      title: '2020秋季新款套装',
-      goodcategory: '衣服',
-      goodstatus: '上架中',
-    },
-    {
-      key: '1',
-      title: '2020秋季新款鞋子',
-      goodcategory: '鞋子',
-      goodstatus: '上架中',
-    },
-  ];
+  const data = productData;
   const pagination = {
     pageSize: 5,
-    
   };
-  console.log('111')
+  const routes = [
+    {
+      breadcrumbName: '首页',
+    },
+    {
+      breadcrumbName: '商品列表',
+    },
+  ];
+  const addGood = () => {
+    setModalTitle('新增商品');
+    setIsModalVisible(true);
+  };
+  const modifyGood = (record) => {
+    setModalTitle('编辑商品');
+    setRecord(record);
+    setIsModalVisible(true);
+  };
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+  const layout = {
+    labelCol: { span: 4 },
+    wrapperCol: { span: 20 },
+  };
+  const tailLayout = {
+    wrapperCol: { offset: 8, span: 16 },
+  };
   return (
-    <PageHeader title="商品列表" extra={[
-        <Button key="1" type="primary" size="large">
+    <PageHeaderWrapper
+      breadcrumb={{ routes }}
+      title="商品列表"
+      extra={[
+        <Button key="1" type="primary" size="middle" onClick={addGood}>
           添加商品
         </Button>,
-      ]} style={{marginTop:'-25px'}}>
-        <Card bordered={false}>
+      ]}
+      style={{ marginTop: '-25px' }}
+    >
+      <Card bordered={false}>
+        <GoodModal />
         <Space style={{ marginBottom: '35px' }}>
           <Select defaultValue="全部分类">
             <Option value="all"> 全部分类 </Option>
@@ -103,12 +133,22 @@ const index = () => {
           <Button type="primary">查询</Button>
           &nbsp;&nbsp;&nbsp;
           <Button>重置</Button>
-        </Space> 
-         
-        <Table columns={columns} dataSource={data} rowSelection pagination={pagination} />
+        </Space>
+
+        <Table
+          columns={columns}
+          dataSource={data}
+          rowSelection
+          pagination={pagination}
+          rowKey="ID"
+        />
       </Card>
-    </PageHeader>
+    </PageHeaderWrapper>
   );
 };
-
-export default index;
+const mapStateToProps = ({ goodList }) => {
+  return {
+    productData: goodList.productsList.data,
+  };
+};
+export default connect(mapStateToProps)(index);

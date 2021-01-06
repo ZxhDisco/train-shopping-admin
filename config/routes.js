@@ -1,4 +1,3 @@
-
 export default [
   {
     path: '/',
@@ -50,7 +49,7 @@ export default [
                   },
                 ],
               },
-             
+
               {
                 name: 'order',
                 icon: 'icon-shangpinziliao24',
@@ -71,14 +70,14 @@ export default [
                     name: 'sortlist',
                     path: '/Goods/SortList/',
                     component: './Goods/SortList/',
-                  }
-                ]
+                  },
+                ],
               },
               {
                 name: 'customers',
                 icon: 'icon-shouquanguanli24',
                 path: '/Customers',
-                component: './Customers'
+                component: './Customers',
               },
               {
                 name: 'sys.setting',
@@ -91,7 +90,7 @@ export default [
                 icon: 'table',
                 path: '/list',
                 component: './ListTableList',
-              },           
+              },
               {
                 component: './404',
               },
