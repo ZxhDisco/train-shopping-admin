@@ -1,5 +1,7 @@
 import React from 'react';
-import { Table, Card, Space, Button, Select, Input, PageHeader } from 'antd';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { Table, Card, Space, Button, Select, Input } from 'antd';
+import { Link } from 'umi';
 const { Option } = Select;
 
 const index = () => {
@@ -18,9 +20,9 @@ const index = () => {
       title: '操作',
       key: 'action',
       align: 'center',
-      render: (text, record) => (
+      render: (_, record) => (
         <Space size="middle">
-          <a>编辑</a>
+          <Link to={'./ModifySort/' + record.ID}>编辑</Link>
         </Space>
       ),
     },
@@ -46,13 +48,24 @@ const index = () => {
   const pagination = {
     pageSize: 5,
   };
+  const routes = [
+    {
+      breadcrumbName: '首页',
+    },
+    {
+      breadcrumbName: '分类列表',
+    },
+  ];
   return (
-    <PageHeader
+    <PageHeaderWrapper
+      breadcrumb={{ routes }}
       title="分类列表"
       extra={[
-        <Button key="1" type="primary" size="large">
-          新增分类
-        </Button>,
+        <Link to="./AddSort" key="link">
+          <Button type="primary" size="large">
+            新增分类
+          </Button>
+        </Link>,
       ]}
       style={{ marginTop: '-25px' }}
     >
@@ -66,7 +79,7 @@ const index = () => {
 
         <Table columns={columns} dataSource={data} rowSelection pagination={pagination} />
       </Card>
-    </PageHeader>
+    </PageHeaderWrapper>
   );
 };
 
