@@ -1,13 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Card, Space, Button, Select, Input, Tag, Modal, Form } from 'antd';
-import { connect } from 'umi';
+import React, { useEffect } from 'react';
+import { Table, Card, Space, Button, Select, Input, Tag } from 'antd';
+import { connect, Link } from 'umi';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import GoodModal from './components/GoodMoadl';
 const { Option } = Select;
 const index = ({ dispatch, productData }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [modalTitle, setModalTitle] = useState('');
-  const [Record, setRecord] = useState(undefined);
   useEffect(() => {
     dispatch({
       type: 'goodList/getProducts',
@@ -47,13 +43,7 @@ const index = ({ dispatch, productData }) => {
       align: 'center',
       render: (_, record) => (
         <Space size="middle">
-          <a
-            onClick={() => {
-              modifyGood(record);
-            }}
-          >
-            编辑
-          </a>
+          <Link to={'./ModifyGood/' + record.ID}>编辑</Link>
         </Space>
       ),
     },
@@ -71,42 +61,20 @@ const index = ({ dispatch, productData }) => {
       breadcrumbName: '商品列表',
     },
   ];
-  const addGood = () => {
-    setModalTitle('新增商品');
-    setIsModalVisible(true);
-  };
-  const modifyGood = (record) => {
-    setModalTitle('编辑商品');
-    setRecord(record);
-    setIsModalVisible(true);
-  };
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-  const layout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 20 },
-  };
-  const tailLayout = {
-    wrapperCol: { offset: 8, span: 16 },
-  };
   return (
     <PageHeaderWrapper
       breadcrumb={{ routes }}
       title="商品列表"
       extra={[
-        <Button key="1" type="primary" size="middle" onClick={addGood}>
-          添加商品
-        </Button>,
+        <Link to="./AddGood" key="link">
+          <Button type="primary" size="large">
+            添加商品
+          </Button>
+        </Link>,
       ]}
       style={{ marginTop: '-25px' }}
     >
       <Card bordered={false}>
-        <GoodModal />
         <Space style={{ marginBottom: '35px' }}>
           <Select defaultValue="全部分类">
             <Option value="all"> 全部分类 </Option>

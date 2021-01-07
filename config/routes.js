@@ -71,6 +71,22 @@ export default [
                     path: '/Goods/SortList/',
                     component: './Goods/SortList/',
                   },
+                  {
+                    path: '/Goods/GoodsList/AddGood',
+                    component: './Goods/GoodsList/AddGood',
+                  },
+                  {
+                    path: '/Goods/GoodsList/ModifyGood/:id',
+                    component: './Goods/GoodsList/ModifyGood',
+                  },
+                  {
+                    path: '/Goods/SortList/AddSort',
+                    component: './Goods/SortList/AddSort',
+                  },
+                  {
+                    path: '/Goods/SortList/ModifySort/:id',
+                    component: './Goods/SortList/ModifySort',
+                  },
                 ],
               },
               {
