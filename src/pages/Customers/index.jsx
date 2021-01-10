@@ -1,36 +1,36 @@
 import React, { useState } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Table, Card, Space, Badge, Button, Select, DatePicker, Input } from 'antd';
-import styles from './index.less'
+import styles from './index.less';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const data = [
-    {
-      key: '1',
-      cname: '佘智伟',
-      area: '莆田',
-      subscription: '未订阅',
-      ordernum: 3,
-      price: 99,
-    },
-    {
-      key: '2',
-      cname: '聂守钬',
-      area: '闽侯',
-      subscription: '已订阅',
-      ordernum: 33,
-      price: 499.9,
-    },
-    {
-      key: '3',
-      cname: '郑俊杰',
-      area: '连江',
-      subscription: '已订阅',
-      ordernum: 6,
-      price: 199.9,
-    },
-  ];
+  {
+    key: '1',
+    cname: '佘智伟',
+    area: '莆田',
+    subscription: '未订阅',
+    ordernum: 3,
+    price: 99,
+  },
+  {
+    key: '2',
+    cname: '聂守钬',
+    area: '闽侯',
+    subscription: '已订阅',
+    ordernum: 33,
+    price: 499.9,
+  },
+  {
+    key: '3',
+    cname: '郑俊杰',
+    area: '连江',
+    subscription: '已订阅',
+    ordernum: 6,
+    price: 199.9,
+  },
+];
 
 const index = () => {
   const columns = [
@@ -72,7 +72,6 @@ const index = () => {
       render: (text, record) => (
         <Space size="middle">
           <a>查看</a>
-          {console.log(record)}
         </Space>
       ),
     },
@@ -80,7 +79,6 @@ const index = () => {
 
   const pagination = {
     pageSize: 5,
-    
   };
   const [isShowDetail, setIsShowDetail] = useState(false);
   return (
@@ -115,9 +113,9 @@ const index = () => {
           <Input placeholder="最小订单" />
           ——
           <Input placeholder="最大订单" />
-        </Space>    
-          
-        <Table columns={columns} dataSource={data}  pagination={pagination} />
+        </Space>
+
+        <Table columns={columns} dataSource={data} pagination={pagination} />
       </Card>
     </PageHeaderWrapper>
   );
