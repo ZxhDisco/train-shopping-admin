@@ -2,13 +2,25 @@ import React, { useEffect } from 'react';
 import { Table, Card, Space, Button, Select, Input, Tag } from 'antd';
 import { connect, Link } from 'umi';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { history } from 'umi';
 const { Option } = Select;
+
 const index = ({ dispatch, productData }) => {
   useEffect(() => {
     dispatch({
       type: 'goodList/getProducts',
     });
   }, []);
+  //传递id
+  const getGood = (values) => {
+    dispatch({
+      type: 'goodList/getGood',
+      payload: values,
+    });
+    setTimeout(() => {
+      history.push('./ModifyGood/' + values);
+    }, 1000);
+  };
   const columns = [
     {
       title: '商品',
@@ -17,8 +29,9 @@ const index = ({ dispatch, productData }) => {
     },
     {
       title: '分类',
-      dataIndex: 'goodcategory',
+      dataIndex: 'categories[0].name',
       align: 'center',
+      render: (_, r) => r.categories[0]?.name,
     },
     {
       title: '状态',
@@ -43,7 +56,13 @@ const index = ({ dispatch, productData }) => {
       align: 'center',
       render: (_, record) => (
         <Space size="middle">
-          <Link to={'./ModifyGood/' + record.ID}>编辑</Link>
+          <a
+            onClick={() => {
+              getGood(record.ID);
+            }}
+          >
+            编辑
+          </a>
         </Space>
       ),
     },
@@ -81,13 +100,6 @@ const index = ({ dispatch, productData }) => {
             <Option value="衣服">衣服 </Option>
             <Option value="裤子">裤子 </Option>
             <Option value="鞋子">鞋子 </Option>
-          </Select>
-          &nbsp;&nbsp;&nbsp;
-          <Select defaultValue=" 全部标签  ">
-            <Option value="all"> 全部标签 </Option>
-            <Option value="标签1">标签1</Option>
-            <Option value="标签2">标签2</Option>
-            <Option value="标签3">标签3</Option>
           </Select>
           &nbsp;&nbsp;&nbsp;
           <Select defaultValue=" 全部状态  ">

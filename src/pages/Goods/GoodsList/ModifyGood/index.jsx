@@ -1,94 +1,77 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Card, Form, Input, Button, Radio, Select, Upload, Modal } from 'antd';
-import { PayCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { Card, Form, Input, Button, Radio, Select, Spin } from 'antd';
+import { PayCircleOutlined } from '@ant-design/icons';
 import { Editor } from '@tinymce/tinymce-react';
+import { connect, history } from 'umi';
+import ModGoodPic from './components/ModGoodPic';
 
-function getBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
+const index = ({ dispatch, record, usefulRecord, loading }) => {
+  const [form] = Form.useForm();
+  let content = usefulRecord.post_content;
+  useEffect(() => {
+    form.setFieldsValue(record);
+  }, []);
+
+  //标签多选器
+  let tags = usefulRecord.tags.map((item) => {
+    return item.name;
   });
-}
-
-class index extends React.Component {
-  state = {
-    previewVisible: false,
-    previewImage: '',
-    previewTitle: '',
-    fileList: [
-      {
-        uid: '-1',
-        name: 'image.png',
-        status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      },
-    ],
+  let children = tags;
+  const toChildren_1 = (value) => {
+    let values = String(value);
+    children = values.split(',');
   };
-  //upload处理
-  handleCancel = () => this.setState({ previewVisible: false });
-
-  handlePreview = async (file) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-
-    this.setState({
-      previewImage: file.url || file.preview,
-      previewVisible: true,
-      previewTitle: file.name || file.url.substring(file.url.lastIndexOf('/') + 1),
+  //分类多选器
+  let categories = usefulRecord.categories.map((item) => {
+    return item.name;
+  });
+  let children2 = categories;
+  const toChildren_2 = (value) => {
+    let values_2 = String(value);
+    children2 = values_2.split(',');
+  };
+  //提交表单
+  const onFinish = (values) => {
+    history.go(-1);
+    dispatch({
+      type: 'goodList/updateGood',
+      payload: {
+        params: values,
+        id: usefulRecord.ID,
+      },
     });
   };
-
-  handleChange = ({ fileList }) => this.setState({ fileList });
-  //富文本change方法
-  handleEditorChange = (e) => {
-    console.log(e.target.getContent());
+  //form布局
+  const layout = {
+    labelCol: {
+      span: 2,
+    },
+    wrapperCol: {
+      span: 22,
+    },
   };
-  render() {
-    //标签多选器
-    const children = [];
-    //分类多选器
-    const children2 = [];
-    //form布局
-    const layout = {
-      labelCol: {
-        span: 2,
-      },
-      wrapperCol: {
-        span: 22,
-      },
-    };
-    const tailLayout = {
-      wrapperCol: {
-        offset: 8,
-        span: 16,
-      },
-    };
-    const routes = [
-      {
-        breadcrumbName: '首页',
-      },
-      {
-        breadcrumbName: '商品列表',
-      },
-      {
-        breadcrumbName: '编辑商品',
-      },
-    ];
-    //upload用到的参数
-    const { previewVisible, previewImage, fileList, previewTitle } = this.state;
-    const uploadButton = (
-      <div>
-        <PlusOutlined />
-        <div style={{ marginTop: 8 }}>Upload</div>
-      </div>
-    );
-    return (
+  const tailLayout = {
+    wrapperCol: {
+      offset: 8,
+      span: 16,
+    },
+  };
+  const routes = [
+    {
+      breadcrumbName: '首页',
+    },
+    {
+      breadcrumbName: '商品列表',
+    },
+    {
+      breadcrumbName: '编辑商品',
+    },
+  ];
+  return (
+    <Spin spinning={loading}>
       <PageHeaderWrapper breadcrumb={{ routes }} title="编辑商品">
-        <Form {...layout} name="basic">
+        <Form {...layout} name="basic" form={form} onFinish={onFinish}>
           <Card>
             <h3>基础信息</h3>
             <Form.Item label="商品名称" name="title" rules={[{ required: true }]}>
@@ -107,13 +90,27 @@ class index extends React.Component {
             <Form.Item label="SKU" name="sku">
               <Input style={{ width: '50%' }} placeholder="请输入商品SKU" />
             </Form.Item>
-            <Form.Item label="商品分类" name="categories">
-              <Select mode="tags" open={false} style={{ width: '50%' }} placeholder="+ 添加分类">
+            <Form.Item label="商品分类">
+              <Select
+                mode="tags"
+                open={false}
+                style={{ width: '50%' }}
+                placeholder="+ 添加分类"
+                onChange={toChildren_2}
+                defaultValue={children2}
+              >
                 {children2}
               </Select>
             </Form.Item>
-            <Form.Item label="商品标签" name="tags">
-              <Select mode="tags" open={false} style={{ width: '50%' }} placeholder="+ 添加标签">
+            <Form.Item label="商品标签">
+              <Select
+                mode="tags"
+                open={false}
+                style={{ width: '50%' }}
+                placeholder="+ 添加标签"
+                onChange={toChildren_1}
+                defaultValue={children}
+              >
                 {children}
               </Select>
             </Form.Item>
@@ -123,56 +120,40 @@ class index extends React.Component {
                 <Radio value="private">下架</Radio>
               </Radio.Group>
             </Form.Item>
-            <Form.Item name="gallery" label="商品图片">
-              <Upload
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                listType="picture-card"
-                fileList={fileList}
-                onPreview={this.handlePreview}
-                onChange={this.handleChange}
-              >
-                {fileList.length >= 8 ? null : uploadButton}
-              </Upload>
-              <Modal
-                visible={previewVisible}
-                title={previewTitle}
-                footer={null}
-                onCancel={this.handleCancel}
-              >
-                <img alt="example" style={{ width: '100%' }} src={previewImage} />
-              </Modal>
-            </Form.Item>
+
+            <span>商品图片:</span>
+            {/* <ModGoodPic /> */}
           </Card>
           <Card style={{ marginTop: '15px' }}>
             <h3>商品详情</h3>
-            <Form.Item name="content">
-              <Editor
-                apiKey="le7m6pa3qo2m11ndjkq0jwkxezfw0n3vtrv19ql58732b55f"
-                initialValue={'111'}
-                init={{
-                  height: 300,
-                  language: 'zh_CN',
-                  menubar: false,
-                  plugins: [
-                    'advlist autolink lists link image',
-                    'charmap print preview anchor help',
-                    'searchreplace visualblocks code',
-                    'insertdatetime media table paste wordcount',
-                  ],
-                  toolbar:
-                    'undo redo | formatselect | bold italic | link image | \
+            <Editor
+              apiKey="le7m6pa3qo2m11ndjkq0jwkxezfw0n3vtrv19ql58732b55f"
+              initialValue={usefulRecord.post_content}
+              init={{
+                height: 300,
+                language: 'zh_CN',
+                menubar: false,
+                plugins: [
+                  'advlist autolink lists link image',
+                  'charmap print preview anchor help',
+                  'searchreplace visualblocks code',
+                  'insertdatetime media table paste wordcount',
+                ],
+                toolbar:
+                  'undo redo | formatselect | bold italic | link image | \
                       alignleft aligncenter alignright | \
                       bullist numlist outdent indent | help',
-                }}
-                onChange={this.handleEditorChange}
-              />
-            </Form.Item>
+              }}
+              onEditorChange={(value) => {
+                content = value;
+              }}
+            />
           </Card>
           <Card
             style={{
               position: 'fixed',
               bottom: '0px',
-              right: '0px;',
+              right: '0px',
               width: '100%',
               height: '80px',
             }}
@@ -185,7 +166,14 @@ class index extends React.Component {
           </Card>
         </Form>
       </PageHeaderWrapper>
-    );
-  }
-}
-export default index;
+    </Spin>
+  );
+};
+const mapStateToProps = ({ goodList, loading }) => {
+  return {
+    record: goodList.recordShow,
+    usefulRecord: goodList.usefulRecord,
+    loading: loading.effects['goodList/getGood'],
+  };
+};
+export default connect(mapStateToProps)(index);
