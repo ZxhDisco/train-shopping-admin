@@ -1,5 +1,6 @@
 import React from 'react';
 import { Table, Card, Space, Button, Select, Input, PageHeader } from 'antd';
+import {Link} from 'umi'
 const { Option } = Select;
 
 const index = () => {
@@ -60,7 +61,7 @@ const index = () => {
         <Space style={{ marginBottom: '35px' }}>
           <Input placeholder="请输入分类名称" style={{ width: '20rem' }} />
           &nbsp;
-          <Button type="primary">查询</Button>
+          <Button type="primary"><Link to='/Goods/SortList/demo'>查询</Link></Button>
           <Button>重置</Button>
         </Space>
 
