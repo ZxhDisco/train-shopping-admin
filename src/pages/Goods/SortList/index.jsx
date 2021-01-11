@@ -1,59 +1,76 @@
-import React from 'react';
-import { Table, Card, Space, Button, Select, Input, PageHeader } from 'antd';
-import {Link} from 'umi'
+import React, { useEffect } from 'react';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { Table, Card, Space, Button, Select, Input } from 'antd';
+import { Link, connect } from 'umi';
 const { Option } = Select;
 
-const index = () => {
+const index = ({ categoryList, dispatch }) => {
+  useEffect(() => {
+    dispatch({
+      type: 'category/getCategoryList',
+    });
+  }, []);
+  //保存record传到修改页面
+  const changeRecord = (values) => {
+    dispatch({
+      type: 'category/changeRecord',
+      payload: {
+        values,
+      },
+    });
+  };
   const columns = [
     {
       title: '分类',
-      dataIndex: 'goodcategory',
+      dataIndex: 'name',
       align: 'left',
     },
     {
       title: '商品数量',
-      dataIndex: 'sku',
+      dataIndex: 'count',
       align: 'center',
     },
     {
       title: '操作',
       key: 'action',
       align: 'center',
-      render: (text, record) => (
+      render: (_, record) => (
         <Space size="middle">
-          <a>编辑</a>
+          <Link
+            to={'./ModifySort/' + record.id}
+            onClick={() => {
+              changeRecord(record);
+            }}
+          >
+            编辑
+          </Link>
         </Space>
       ),
     },
   ];
 
-  const data = [
-    {
-      key: '1',
-      goodcategory: '衣服',
-      sku: 99,
-    },
-    {
-      key: '2',
-      goodcategory: '裤子',
-      sku: 12,
-    },
-    {
-      key: '3',
-      goodcategory: '鞋子',
-      sku: 3,
-    },
-  ];
+  const data = categoryList;
   const pagination = {
     pageSize: 5,
   };
+  const routes = [
+    {
+      breadcrumbName: '首页',
+    },
+    {
+      breadcrumbName: '分类列表',
+    },
+  ];
   return (
-    <PageHeader
+    <PageHeaderWrapper
+      breadcrumb={{ routes }}
       title="分类列表"
       extra={[
-        <Button key="1" type="primary" size="large">
-          新增分类
-        </Button>,
+        <Link to="./AddSort" key="link">
+          <Button type="primary" size="large">
+            新增分类
+          </Button>
+        </Link>,
       ]}
       style={{ marginTop: '-25px' }}
     >
@@ -65,10 +82,20 @@ const index = () => {
           <Button>重置</Button>
         </Space>
 
-        <Table columns={columns} dataSource={data} rowSelection pagination={pagination} />
+        <Table
+          columns={columns}
+          dataSource={data}
+          rowSelection
+          pagination={pagination}
+          rowKey="id"
+        />
       </Card>
-    </PageHeader>
+    </PageHeaderWrapper>
   );
 };
-
-export default index;
+const mapStateToProps = ({ category }) => {
+  return {
+    categoryList: category.categoryList.data,
+  };
+};
+export default connect(mapStateToProps)(index);
