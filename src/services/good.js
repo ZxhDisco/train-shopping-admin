@@ -4,10 +4,26 @@ import { message } from 'antd';
 export async function getGoodList() {
   return request('/api/admin/products');
 }
-export async function getGood(params) {
-  return request(`/api/admin/products/${params}`);
+export async function getGood(id) {
+  return request(`/api/admin/products/${id}`);
 }
 
+export async function deleteGood(payload) {
+  return request(`/api/admin/products/${payload}`, {
+    method: 'DELETE',
+  })
+    .then((res) => {
+      message.success('删除成功');
+    })
+    .catch((error) => {
+      message.error('删除失败');
+    });
+}
+export async function searchGood(payload) {
+  return request('/api/admin/products', {
+    params: payload,
+  });
+}
 export async function updateGood({ params, id }) {
   return request(`/api/admin/products/${id}`, {
     method: 'PUT',

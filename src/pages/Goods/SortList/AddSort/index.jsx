@@ -2,7 +2,7 @@ import React from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Card, Form, Input, Button } from 'antd';
 import { Editor } from '@tinymce/tinymce-react';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import AddSortPic from './components/AddSortPic';
 
 const index = ({ dispatch }) => {
@@ -36,7 +36,7 @@ const index = ({ dispatch }) => {
   ];
   //表单提交函数
   const onFinish = (values) => {
-    history.go(-1);
+    history.push('/Goods/SortList/');
     dispatch({
       type: 'category/addCategory',
       payload: {
@@ -53,7 +53,7 @@ const index = ({ dispatch }) => {
             <Input style={{ width: '50%' }} placeholder="请输入分类名称" />
           </Form.Item>
           <h3>商品图片</h3>
-          {/* <AddSortPic /> */}
+          <AddSortPic />
           <h3>分类描述</h3>
           <Editor
             apiKey="le7m6pa3qo2m11ndjkq0jwkxezfw0n3vtrv19ql58732b55f"
@@ -78,9 +78,9 @@ const index = ({ dispatch }) => {
             }}
           />
         </Card>
-        <Card style={{ marginTop: '15px' }}>
+        {/* <Card style={{ marginTop: '15px' }}>
           <h3>关联商品</h3>
-        </Card>
+        </Card> */}
         <Card
           style={{
             position: 'fixed',

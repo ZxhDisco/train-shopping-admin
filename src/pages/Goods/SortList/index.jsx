@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Table, Card, Space, Button, Select, Input } from 'antd';
-import { Link, connect } from 'umi';
+import { Table, Card, Space, Button, Select, Input, Form, Row, Col, Modal } from 'antd';
+import { Link, connect, history } from 'umi';
 const { Option } = Select;
 
 const index = ({ categoryList, dispatch }) => {
@@ -10,14 +10,24 @@ const index = ({ categoryList, dispatch }) => {
       type: 'category/getCategoryList',
     });
   }, []);
-  //保存record传到修改页面
-  const changeRecord = (values) => {
+  //删除弹出框
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [currentId, setCurrentId] = useState();
+  const showModal = (values) => {
+    setIsModalVisible(true);
+    setCurrentId(values);
+  };
+
+  const handleOk = () => {
     dispatch({
-      type: 'category/changeRecord',
-      payload: {
-        values,
-      },
+      type: 'category/deleteCategory',
+      payload: currentId,
     });
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
   };
   const columns = [
     {
@@ -36,14 +46,20 @@ const index = ({ categoryList, dispatch }) => {
       align: 'center',
       render: (_, record) => (
         <Space size="middle">
-          <Link
-            to={'./ModifySort/' + record.id}
+          <Button
             onClick={() => {
-              changeRecord(record);
+              history.push('./ModifySort/' + record.id);
             }}
           >
             编辑
-          </Link>
+          </Button>
+          <Button
+            onClick={() => {
+              showModal(record.id);
+            }}
+          >
+            删除
+          </Button>
         </Space>
       ),
     },
@@ -61,6 +77,21 @@ const index = ({ categoryList, dispatch }) => {
       breadcrumbName: '分类列表',
     },
   ];
+  //form布局
+  const layout = {
+    labelCol: { span: 2 },
+    wrapperCol: { span: 22 },
+  };
+  const tailLayout = {
+    wrapperCol: { offset: 4, span: 20 },
+  };
+  //查找分类按钮
+  const onFinish = (values) => {
+    dispatch({
+      type: 'category/searchCategory',
+      payload: values,
+    });
+  };
   return (
     <PageHeaderWrapper
       breadcrumb={{ routes }}
@@ -75,12 +106,27 @@ const index = ({ categoryList, dispatch }) => {
       style={{ marginTop: '-25px' }}
     >
       <Card bordered={false}>
-        <Space style={{ marginBottom: '35px' }}>
-          <Input placeholder="请输入分类名称" style={{ width: '20rem' }} />
-          &nbsp;
-          <Button type="primary"><Link to='/Goods/SortList/demo'>查询</Link></Button>
-          <Button>重置</Button>
-        </Space>
+
+        <Modal visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+          <p>是否确认删除本分类</p>
+        </Modal>
+        <Form {...layout} name="basic" onFinish={onFinish}>
+          <Row gutter={10}>
+            <Col span={6}>
+              <Form.Item name="filter[name]">
+                <Input placeholder="请输入分类名称" />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item {...tailLayout}>
+                <Button type="primary" htmlType="submit">
+                  查询
+                </Button>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+
 
         <Table
           columns={columns}
