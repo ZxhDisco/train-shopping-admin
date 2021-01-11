@@ -1,20 +1,34 @@
-import { getCategoryList, updateCategory, addCategory } from '@/services/category';
+import {
+  getCategoryList,
+  updateCategory,
+  addCategory,
+  searchCategory,
+  getCategory,
+  deleteCategory,
+} from '@/services/category';
 
 const Category = {
   namespace: 'category',
   state: {
     categoryList: {},
-    Record: null,
+    record: {},
   },
   effects: {
     *getCategoryList(_, { call, put }) {
       const res = yield call(getCategoryList);
-      console.log(res);
       yield put({
         type: 'saveCategoryList',
         payload: {
           data: res,
         },
+      });
+    },
+    *getCategory({ payload: { id } }, { call, put }) {
+      console.log('++++++++++++');
+      let res = yield call(getCategory, id);
+      yield put({
+        type: 'saveCategory',
+        payload: res,
       });
     },
     *updateCategory({ payload: { values, id } }, { call, put }) {
@@ -29,6 +43,19 @@ const Category = {
         type: 'getCategoryList',
       });
     },
+    *searchCategory({ payload }, { call, put }) {
+      const res = yield call(searchCategory, payload);
+      yield put({
+        type: 'saveSearchCategory',
+        payload: res,
+      });
+    },
+    *deleteCategory({ payload }, { call, put }) {
+      yield call(deleteCategory, payload);
+      yield put({
+        type: 'getCategoryList',
+      });
+    },
   },
   reducers: {
     saveCategoryList(state, { payload: { data } }) {
@@ -37,10 +64,16 @@ const Category = {
         categoryList: data,
       };
     },
-    changeRecord(state, { payload: { values } }) {
+    saveCategory(state, { payload }) {
       return {
         ...state,
-        Record: values,
+        record: payload,
+      };
+    },
+    saveSearchCategory(state, { payload }) {
+      return {
+        ...state,
+        categoryList: payload,
       };
     },
   },

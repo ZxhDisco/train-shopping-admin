@@ -1,11 +1,11 @@
-import { getGoodList, getGood, updateGood, addGood } from '@/services/good';
+import { getGoodList, getGood, updateGood, addGood, searchGood, deleteGood } from '@/services/good';
 
 const GlobalModel = {
   namespace: 'goodList',
   state: {
     productsList: {},
     recordShow: {},
-    usefulRecord: {},
+    usefulRecord: { tags: [], categories: [] },
   },
   effects: {
     *getProducts(_, { call, put }) {
@@ -17,8 +17,8 @@ const GlobalModel = {
         },
       });
     },
-    *getGood({ payload }, { call, put }) {
-      const res = yield call(getGood, payload);
+    *getGood({ payload: { id } }, { call, put }) {
+      const res = yield call(getGood, id);
       yield put({
         type: 'saveGood',
         payload: res,
@@ -32,6 +32,20 @@ const GlobalModel = {
     },
     *addGood({ payload: { values } }, { call, put }) {
       yield call(addGood, values);
+      yield put({
+        type: 'getProducts',
+      });
+    },
+    *searchGood({ payload }, { call, put }) {
+      const res = yield call(searchGood, payload);
+      console.log(res, '123');
+      yield put({
+        type: 'saveSearchGood',
+        payload: res,
+      });
+    },
+    *deleteGood({ payload }, { call, put }) {
+      yield call(deleteGood, payload);
       yield put({
         type: 'getProducts',
       });
@@ -51,6 +65,8 @@ const GlobalModel = {
       useRecord.regular_price = payload.regular_price;
       useRecord.sku = payload.sku;
       useRecord.post_status = payload.post_status;
+      useRecord.manage_stock = payload.manage_stock;
+      useRecord.post_content = payload.post_content;
       return {
         ...state,
         recordShow: useRecord,
@@ -65,6 +81,12 @@ const GlobalModel = {
       return {
         ...state,
         productsList: res,
+      };
+    },
+    saveSearchGood(state, { payload }) {
+      return {
+        ...state,
+        productsList: payload,
       };
     },
   },

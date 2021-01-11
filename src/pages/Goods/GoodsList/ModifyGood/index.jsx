@@ -6,13 +6,24 @@ import { Editor } from '@tinymce/tinymce-react';
 import { connect, history } from 'umi';
 import ModGoodPic from './components/ModGoodPic';
 
-const index = ({ dispatch, record, usefulRecord, loading }) => {
-  const [form] = Form.useForm();
-  let content = usefulRecord.post_content;
-  useEffect(() => {
-    form.setFieldsValue(record);
+const index = ({ dispatch, record, usefulRecord, loading, match }) => {
+  //富文本赋初值
+  let content = '';
+  useEffect(async () => {
+    await dispatch({
+      type: 'goodList/getGood',
+      payload: {
+        id: match.params.id,
+      },
+    });
   }, []);
-
+  useEffect(() => {
+    console.log(record);
+    form.setFieldsValue(record);
+    content = record?.post_content;
+  }, [record]);
+  //表单方法声明
+  const [form] = Form.useForm();
   //标签多选器
   let tags = usefulRecord.tags.map((item) => {
     return item.name;
@@ -33,11 +44,11 @@ const index = ({ dispatch, record, usefulRecord, loading }) => {
   };
   //提交表单
   const onFinish = (values) => {
-    history.go(-1);
+    history.push('/Goods/GoodsList/');
     dispatch({
       type: 'goodList/updateGood',
       payload: {
-        params: values,
+        params: { ...values, content: content },
         id: usefulRecord.ID,
       },
     });
@@ -87,8 +98,14 @@ const index = ({ dispatch, record, usefulRecord, loading }) => {
             <Form.Item label="原价" name="regular_price">
               <Input style={{ width: '20%' }} placeholder="请输入划线价" />
             </Form.Item>
-            <Form.Item label="SKU" name="sku">
+            <Form.Item label="SKU" name="sku" rules={[{ required: true }]}>
               <Input style={{ width: '50%' }} placeholder="请输入商品SKU" />
+            </Form.Item>
+            <Form.Item name="manage_stock" label="管理库存" rules={[{ required: true }]}>
+              <Radio.Group>
+                <Radio value="yes">是</Radio>
+                <Radio value="no">否</Radio>
+              </Radio.Group>
             </Form.Item>
             <Form.Item label="商品分类">
               <Select
@@ -122,13 +139,13 @@ const index = ({ dispatch, record, usefulRecord, loading }) => {
             </Form.Item>
 
             <span>商品图片:</span>
-            {/* <ModGoodPic /> */}
+            <ModGoodPic />
           </Card>
           <Card style={{ marginTop: '15px' }}>
             <h3>商品详情</h3>
             <Editor
               apiKey="le7m6pa3qo2m11ndjkq0jwkxezfw0n3vtrv19ql58732b55f"
-              initialValue={usefulRecord.post_content}
+              initialValue={content}
               init={{
                 height: 300,
                 language: 'zh_CN',
@@ -144,8 +161,8 @@ const index = ({ dispatch, record, usefulRecord, loading }) => {
                       alignleft aligncenter alignright | \
                       bullist numlist outdent indent | help',
               }}
-              onEditorChange={(value) => {
-                content = value;
+              onEditorChange={(values) => {
+                content = values;
               }}
             />
           </Card>
