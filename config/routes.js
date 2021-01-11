@@ -1,4 +1,3 @@
-
 export default [
   {
     path: '/',
@@ -50,12 +49,21 @@ export default [
                   },
                 ],
               },
-             
               {
+                path: '/Order',
                 name: 'order',
-                icon: 'icon-shangpinziliao24',
-                path: '/OrderList',
-                component: './OrderList',
+                icon: 'icon-shangpinziliao24',             
+                routes: [
+                  {
+                    path: '/Order/OrderList',
+                    name: 'allOrder',
+                    component: './Order/OrderList',
+                  },
+                  {
+                    path: '/Order/OrderList/Detail',
+                    component: './Order/OrderList/Detail',
+                  },
+                ],
               },
               {
                 name: 'goods',
@@ -71,14 +79,28 @@ export default [
                     name: 'sortlist',
                     path: '/Goods/SortList/',
                     component: './Goods/SortList/',
+                  },
+                  {
+                    path: '/Goods/SortList/demo',
+                    component: './Goods/SortList/demo',
                   }
-                ]
+                ],
               },
               {
                 name: 'customers',
                 icon: 'icon-shouquanguanli24',
                 path: '/Customers',
-                component: './Customers'
+                routes: [
+                  {
+                    name:'allCustomers',
+                    path:'/Customers/CustomerList',
+                    component:'./Customers/CustomerList'
+                  },
+                  {
+                    path:'/Customers/CustomerList/Detail',
+                    component:'./Customers/CustomerList/Detail'
+                  }
+                ]
               },
               {
                 name: 'sys.setting',
@@ -91,7 +113,7 @@ export default [
                 icon: 'table',
                 path: '/list',
                 component: './ListTableList',
-              },           
+              },
               {
                 component: './404',
               },

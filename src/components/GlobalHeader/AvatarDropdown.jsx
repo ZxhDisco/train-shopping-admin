@@ -6,6 +6,14 @@ import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 
 class AvatarDropdown extends React.Component {
+  componentWillMount() {
+    if (window.localStorage.res) {
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'login/getRes',
+      });
+    }
+  }
   onMenuClick = (event) => {
     const { key } = event;
 
@@ -23,15 +31,8 @@ class AvatarDropdown extends React.Component {
 
     history.push(`/account/${key}`);
   };
-
   render() {
-    const {
-      currentUser = {
-        avatar: '',
-        name: '',
-      },
-      menu,
-    } = this.props;
+    const { menu, currentUser } = this.props;
     const menuHeaderDropdown = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
         {menu && (
@@ -54,11 +55,10 @@ class AvatarDropdown extends React.Component {
         </Menu.Item>
       </Menu>
     );
-    return currentUser && currentUser.name ? (
+    return currentUser ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
-          <span className={`${styles.name} anticon`}>{currentUser.name}</span>
+          <span className={`${styles.name} anticon`}>{currentUser.user.name}</span>
         </span>
       </HeaderDropdown>
     ) : (
@@ -75,6 +75,6 @@ class AvatarDropdown extends React.Component {
   }
 }
 
-export default connect(({ user }) => ({
-  currentUser: user.currentUser,
+export default connect(({ login }) => ({
+  currentUser: login.currentUser,
 }))(AvatarDropdown);

@@ -1,146 +1,154 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Table, Card, Space, Button, Select, Input, Tag, Modal, Form } from 'antd';
+import { connect } from 'umi';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-
-import { Table, Card, Space, Badge, Button, Select, DatePicker, Input , PageHeader,Tag } from 'antd';
-
+import GoodModal from './components/GoodMoadl';
 const { Option } = Select;
-const { RangePicker } = DatePicker;
-
-const index = () => {
+const index = ({ dispatch, productData }) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalTitle, setModalTitle] = useState('');
+  const [Record, setRecord] = useState(undefined);
+  useEffect(() => {
+    dispatch({
+      type: 'goodList/getProducts',
+    });
+  }, []);
   const columns = [
     {
-
-      title: '订单编号',
-      dataIndex: 'oid',
+      title: '商品',
+      dataIndex: 'title',
+      align: 'left',
+    },
+    {
+      title: '分类',
+      dataIndex: 'goodcategory',
       align: 'center',
     },
     {
-      title: '付款时间',
-      dataIndex: 'ptime',
+      title: '状态',
+      dataIndex: 'post_status',
       align: 'center',
-    },
-    {
-      title: '订单状态',
-      dataIndex: 'orderstatus',
-      align: 'center',
-
       render: (_, record) => {
-        let res = record.goodstatus;
-        let color = res === '上架中'  ? 'green' : 'red';
+        let res = record.post_status;
+        let color = res === 'publish' ? 'green' : 'red';
+        let status = res === 'publish' ? '上架中' : '已下架';
         return (
           <Space>
-        <Tag color={color} key={record.goodstatus}>
-            {record.goodstatus}
-          </Tag>
-      </Space>
-        )
-
+            <Tag color={color} key={record.goodstatus}>
+              {status}
+            </Tag>
+          </Space>
+        );
       },
     },
     {
-      title: '发货状态',
-      dataIndex: 'shipstatus',
-      align: 'center',
-    },
-    {
-      title: '订单金额',
-      d
-      ataIndex: 'price',
-      align: 'center',
-    },
-
       title: '操作',
       key: 'action',
       align: 'center',
       render: (_, record) => (
         <Space size="middle">
-
-          <a>查看</a>
-
-         
-
-          {console.log(record)}
+          <a
+            onClick={() => {
+              modifyGood(record);
+            }}
+          >
+            编辑
+          </a>
         </Space>
       ),
     },
   ];
 
-  const data = [
-    {
-      key: '1',
-
-      oid: '1',
-      ptime: 2020,
-      orderstatus: '进行中',
-      shipstatus: '已发货',
-      price: '99.9',
-    },
-    {
-      key: '2',
-      oid: '2',
-      ptime: 2021,
-      orderstatus: '已完成',
-      shipstatus: '未发货',
-      price: '49.9',
-    },
-    {
-      key: '3',
-      oid: '3',
-      ptime: 2022,
-      orderstatus: '已取消',
-      shipstatus: '已发货',
-      price: '99.9',
-    },
-  ];
+  const data = productData;
   const pagination = {
     pageSize: 5,
-    
+  };
+  const routes = [
+    {
+      breadcrumbName: '首页',
+    },
+    {
+      breadcrumbName: '商品列表',
+    },
+  ];
+  const addGood = () => {
+    setModalTitle('新增商品');
+    setIsModalVisible(true);
+  };
+  const modifyGood = (record) => {
+    setModalTitle('编辑商品');
+    setRecord(record);
+    setIsModalVisible(true);
+  };
+  const handleOk = () => {
+    setIsModalVisible(false);
   };
 
-  const [isShowDetail, setIsShowDetail] = useState(false);
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+  const layout = {
+    labelCol: { span: 4 },
+    wrapperCol: { span: 20 },
+  };
+  const tailLayout = {
+    wrapperCol: { offset: 8, span: 16 },
+  };
   return (
-    <PageHeaderWrapper>
+    <PageHeaderWrapper
+      breadcrumb={{ routes }}
+      title="商品列表"
+      extra={[
+        <Button key="1" type="primary" size="middle" onClick={addGood}>
+          添加商品
+        </Button>,
+      ]}
+      style={{ marginTop: '-25px' }}
+    >
       <Card bordered={false}>
+        <GoodModal />
         <Space style={{ marginBottom: '35px' }}>
-          <Select defaultValue=" 全部订单状态  ">
-            <Option value="all"> 全部订单状态 </Option>
-            <Option value="进行中">进行中 </Option>
-            <Option value="已完成">已完成 </Option>
-            <Option value="已取消">已取消 </Option>
+          <Select defaultValue="全部分类">
+            <Option value="all"> 全部分类 </Option>
+            <Option value="衣服">衣服 </Option>
+            <Option value="裤子">裤子 </Option>
+            <Option value="鞋子">鞋子 </Option>
           </Select>
           &nbsp;&nbsp;&nbsp;
-          <Select defaultValue=" 全部发货状态  ">
-            <Option value="all"> 全部发货状态 </Option>
-            <Option value="已发货">已发货</Option>
-            <Option value="已取消">已取消</Option>
+          <Select defaultValue=" 全部标签  ">
+            <Option value="all"> 全部标签 </Option>
+            <Option value="标签1">标签1</Option>
+            <Option value="标签2">标签2</Option>
+            <Option value="标签3">标签3</Option>
           </Select>
           &nbsp;&nbsp;&nbsp;
-          <RangePicker />
+          <Select defaultValue=" 全部状态  ">
+            <Option value="all"> 全部状态 </Option>
+            <Option value="已上架">已上架</Option>
+            <Option value="已下架">已下架</Option>
+          </Select>
           &nbsp;&nbsp;&nbsp;
-          <Input placeholder="请输入订单编号/支付编号/商品名/SKU/邮箱" style={{ width: '20rem' }} />
-
-
-
+          <Input placeholder="请输出商品名或SKU" style={{ width: '20rem' }} />
           &nbsp;&nbsp;&nbsp;
           <Button type="primary">查询</Button>
           &nbsp;&nbsp;&nbsp;
           <Button>重置</Button>
-
         </Space>
 
-        <Space style={{ display: `${isShowDetail ? 'flex' : 'none'}` }}>
-          <Input placeholder="最小金额" /> ——
-          <Input placeholder="最大金额" />
-          <Input placeholder="最小订单" />
-          ——
-          <Input placeholder="最大订单" />
-        </Space>    
-         
-        <Table columns={columns} dataSource={data} rowSelection pagination={pagination} />
+        <Table
+          columns={columns}
+          dataSource={data}
+          rowSelection
+          pagination={pagination}
+          rowKey="ID"
+        />
       </Card>
     </PageHeaderWrapper>
-     
   );
 };
-
-export default index;
+const mapStateToProps = ({ goodList }) => {
+  return {
+    productData: goodList.productsList.data,
+  };
+};
+export default connect(mapStateToProps)(index);
