@@ -5,8 +5,8 @@ import { Editor } from '@tinymce/tinymce-react';
 import { connect, history } from 'umi';
 
 const index = ({ record, dispatch, match, loading }) => {
-  console.log(record);
   //富文本赋初值
+  const [url, setUrl] = useState('');
   const [title, setTitle] = useState(null);
   const [form] = Form.useForm();
   useEffect(async () => {
@@ -20,6 +20,7 @@ const index = ({ record, dispatch, match, loading }) => {
   useEffect(() => {
     form.setFieldsValue(record);
     setTitle(record?.description);
+    setUrl(record?.thumbnail_url);
   }, [record]);
 
   //form布局
@@ -77,11 +78,8 @@ const index = ({ record, dispatch, match, loading }) => {
               <Input style={{ width: '50%' }} placeholder="请输入分类名称" />
             </Form.Item>
             <h3>商品图片</h3>
-            <Image
-              width={100}
-              src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-            />
-            <Button style={{ marginLeft: '10px' }}>更换图片</Button>
+            <Image width={100} src={url} placeholder={true} />
+            {/* <Button style={{ marginLeft: '10px' }}>更换图片</Button> */}
             <h3 style={{ marginTop: '10px' }}>分类描述</h3>
             {(title || title === '') && !loading && (
               <Editor

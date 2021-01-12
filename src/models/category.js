@@ -24,7 +24,6 @@ const Category = {
       });
     },
     *getCategory({ payload: { id } }, { call, put }) {
-      console.log('++++++++++++');
       let res = yield call(getCategory, id);
       yield put({
         type: 'saveCategory',

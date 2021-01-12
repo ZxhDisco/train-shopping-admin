@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Table, Card, Space, Button, Select, Input, Form, Row, Col, Modal } from 'antd';
+import { Table, Card, Space, Button, Select, Input, Form, Row, Col, Modal, Image } from 'antd';
 import { Link, connect, history } from 'umi';
 const { Option } = Select;
 
@@ -34,6 +34,14 @@ const index = ({ categoryList, dispatch }) => {
       title: '分类',
       dataIndex: 'name',
       align: 'left',
+      render: (_, record) => {
+        return (
+          <>
+            <Image width={50} src={record.thumbnail_url} />
+            <span style={{ marginLeft: '10px' }}>{record.name}</span>
+          </>
+        );
+      },
     },
     {
       title: '商品数量',

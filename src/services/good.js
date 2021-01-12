@@ -7,7 +7,20 @@ export async function getGoodList() {
 export async function getGood(id) {
   return request(`/api/admin/products/${id}`);
 }
-
+//创建分类详情供分类标签使用
+export async function createGoodCategoryId(payload) {
+  return request('/api/admin/categories', {
+    method: 'POST',
+    data: payload,
+  });
+}
+//创建标签详情供分类标签使用
+export async function createGoodTagsId(payload) {
+  return request('/api/admin/tags', {
+    method: 'POST',
+    data: payload,
+  });
+}
 export async function deleteGood(payload) {
   return request(`/api/admin/products/${payload}`, {
     method: 'DELETE',

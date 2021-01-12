@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Card, Space, Button, Select, Input, Tag, Form, Row, Col, Modal } from 'antd';
+import { Table, Card, Space, Button, Select, Input, Tag, Form, Row, Col, Modal, Image } from 'antd';
 import { connect, Link } from 'umi';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { history } from 'umi';
@@ -48,6 +48,14 @@ const index = ({ dispatch, productData }) => {
       title: '商品',
       dataIndex: 'title',
       align: 'left',
+      render: (_, record) => {
+        return (
+          <>
+            <Image width={50} src={record.image} />
+            <span style={{ marginLeft: '10px' }}>{record.title}</span>
+          </>
+        );
+      },
     },
     {
       title: '分类',
