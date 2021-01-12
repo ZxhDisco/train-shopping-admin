@@ -14,7 +14,15 @@ class AddGoodPic extends React.Component {
   state = {
     previewVisible: false,
     previewImage: '',
-    fileList: [],
+    fileList: [
+      {
+        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+      },
+      {
+        url:
+          'https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3455184204,2524748306&fm=26&gp=0.jpg',
+      },
+    ],
     imgList: [],
   };
 

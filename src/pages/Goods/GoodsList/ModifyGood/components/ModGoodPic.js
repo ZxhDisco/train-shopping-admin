@@ -1,5 +1,6 @@
 import { Upload, Icon, Modal } from 'antd';
 import './index.less';
+import { connect } from 'umi';
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -11,6 +12,11 @@ function getBase64(file) {
 }
 
 class ModGoodPic extends React.Component {
+  componentDidMount() {
+    this.setState({
+      fileList: this.props.imgs,
+    });
+  }
   state = {
     previewVisible: false,
     previewImage: '',
@@ -82,4 +88,9 @@ class ModGoodPic extends React.Component {
     );
   }
 }
-export default ModGoodPic;
+const mapStateToProps = ({ goodList }) => {
+  return {
+    imgs: goodList.imgs,
+  };
+};
+export default connect(mapStateToProps)(ModGoodPic);
