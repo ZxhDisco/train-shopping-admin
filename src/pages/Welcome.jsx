@@ -1,63 +1,65 @@
 import React from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
-import { Card, Alert, Typography } from 'antd';
-import { useIntl, FormattedMessage } from 'umi';
-import styles from './Welcome.less';
+import ProCard from '@ant-design/pro-card';
+import { TinyColumn  } from '@ant-design/charts';
 
-const CodePreview = ({ children }) => (
-  <pre className={styles.pre}>
-    <code>
-      <Typography.Text copyable>{children}</Typography.Text>
-    </code>
-  </pre>
-);
 
 export default () => {
-  const intl = useIntl();
+  var data = [274, 337, 81, 497, 666, 219, 269];
+  var config = {
+      height: 64,
+      width: 240,
+      autoFit: false,
+      data: data,
+      tooltip: {
+          customContent: function customContent(x, data) {
+              var _data$, _data$$data;
+              return 'NO.'
+                  .concat(x, ': ')
+                  .concat((_data$ = data[0]) === null || _data$ === void 0
+                  ? void 0
+                  : (_data$$data = _data$.data) === null || _data$$data === void 0
+                      ? void 0
+                      : _data$$data.y.toFixed(2));
+          },
+      },
+  };
+
+
   return (
-    <PageContainer>
-      <Card>
-        <Alert
-          message={intl.formatMessage({
-            id: 'pages.welcome.alertMessage',
-            defaultMessage: '更快更强的重型组件，已经发布。',
-          })}
-          type="success"
-          showIcon
-          banner
-          style={{
-            margin: -12,
-            marginBottom: 24,
-          }}
-        />
-        <Typography.Text strong>
-          <FormattedMessage id="pages.welcome.advancedComponent" defaultMessage="高级表格" />{' '}
-          <a
-            href="https://procomponents.ant.design/components/table"
-            rel="noopener noreferrer"
-            target="__blank"
-          >
-            <FormattedMessage id="pages.welcome.link" defaultMessage="欢迎使用" />
-          </a>
-        </Typography.Text>
-        <CodePreview>yarn add @ant-design/pro-table</CodePreview>
-        <Typography.Text
-          strong
-          style={{
-            marginBottom: 12,
-          }}
-        >
-          <FormattedMessage id="pages.welcome.advancedLayout" defaultMessage="高级布局" />{' '}
-          <a
-            href="https://procomponents.ant.design/components/layout"
-            rel="noopener noreferrer"
-            target="__blank"
-          >
-            <FormattedMessage id="pages.welcome.link" defaultMessage="欢迎使用" />
-          </a>
-        </Typography.Text>
-        <CodePreview>yarn add @ant-design/pro-layout</CodePreview>
-      </Card>
-    </PageContainer>
+    <>
+      <ProCard gutter={15} title="24栅格" style={{backgroundColor:'#f0f2f5'}}>
+        <ProCard colSpan={6} layout="center" bordered style={{height:200}}>
+          <TinyColumn {...config}/>
+        </ProCard>
+        <ProCard colSpan={6} layout="center" bordered>
+          <TinyColumn {...config}/>
+        </ProCard>
+        <ProCard colSpan={6} layout="center" bordered>
+          colSpan-6
+        </ProCard>
+        <ProCard colSpan={6} layout="center" bordered>
+          colSpan-6
+        </ProCard>
+      </ProCard>
+
+      <ProCard style={{ marginTop: 8 }} gutter={15} ghost>
+        <ProCard colSpan={24} layout="center" bordered>
+          {/* <Column {...config}/> */}
+        </ProCard>
+      </ProCard>
+
+      <ProCard style={{ marginTop: 8 }} gutter={15} ghost>
+        <ProCard colSpan={12} bordered layout="center">
+          Auto
+        </ProCard>
+        <ProCard colSpan={12} bordered layout="center">
+          Auto
+        </ProCard>
+      </ProCard>
+    </>
   );
 };
+
+
+
+
