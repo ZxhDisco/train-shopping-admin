@@ -40,7 +40,7 @@ const index = ({ dispatch }) => {
     dispatch({
       type: 'category/addCategory',
       payload: {
-        values,
+        values: { ...values, description: content },
       },
     });
   };
