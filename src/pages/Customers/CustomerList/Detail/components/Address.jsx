@@ -50,7 +50,7 @@ const Address = ({ user }) => {
             renderItem={(item, index) => (
               <List.Item key={index}>
                 <Space direction="vertical">
-                  <h3>收货地址{index}</h3>
+                  <h3>收货地址{index + 1}</h3>
                   <div
                     style={{ display: 'flex', justifyContent: 'space-between' }}
                   >

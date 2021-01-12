@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import {  FormattedMessage, history, connect } from 'umi';
-import { message, Space, Badge, Button, Input, Table, Tag } from 'antd';
+import { history, connect } from 'umi';
+import { message, Space, Badge, Spin, Table, Tag } from 'antd';
 import ProTable from '@ant-design/pro-table';
 import ProForm, {
   ProFormSelect,
@@ -13,11 +13,10 @@ import styles from './index.css';
 import moment from 'moment'
 
 const TableList = ({ order, dispatch }) => {
-  const actionRef = useRef();
-  const [currentRow, setCurrentRow] = useState();
-  const [isShowDetail, setIsShowDetail] = useState(false);
+  
   const [filter, setFilter] = useState({});
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true)
 
   const columns = [
     {
@@ -27,9 +26,7 @@ const TableList = ({ order, dispatch }) => {
       render: (dom, entity) => {
         return (
           <a
-            onClick={() => {
-              setCurrentRow(entity);
-            }}
+           
           >
             {dom}
           </a>
@@ -91,8 +88,7 @@ const TableList = ({ order, dispatch }) => {
       render: (_, record) => [
         <a
           key="config"
-          onClick={() => {
-            setCurrentRow(record);
+          onClick={() => {        
             history.push('OrderList/Detail/'+record.ID);
           }}
         >
@@ -105,6 +101,7 @@ const TableList = ({ order, dispatch }) => {
   useEffect(async () => {
     const res = await queryOrder(filter);
     setData(res.data)
+    setLoading(false)
     console.log(filter);
   }, [filter]);
 
@@ -113,21 +110,11 @@ const TableList = ({ order, dispatch }) => {
       <div className={styles.searchContent}>
         <ProForm
           onFinish={async (values) => {
-            console.log(values);
-          //   let data = Object.values(values)
-          //   console.log(data[0]);
-          //  if(data[0]===)
-            // if((values.filter)[date]){
-            //   // values.filter[date] = values.filter[date][0] +',' + values.filter[date][1]
-            //   // console.log(values.filter[date]);
-            //   console.log('1');
-            // }
             if (values['filter[date]']) {
-              console.log(moment(values['filter[date]'][0]).format());
-              
+              console.log(moment(values['filter[date]'][0]).format());        
             }
             setFilter(values);
-            
+            setLoading(true)
           }}
         >
           <ProForm.Group>
@@ -178,17 +165,13 @@ const TableList = ({ order, dispatch }) => {
           </ProForm.Group>
         </ProForm>
       </div>
-      <ProTable
+      {loading?<div style={{ textAlign: 'center'}}> 
+        <Spin size='large' />
+      </div>:(<ProTable
         headerTitle="查询表格"
-        // actionRef={actionRef}
         rowKey={(record) => record.ID}
         search={false}
         toolBarRender={false}
-        // request={async () => {
-        //   const res = await queryOrder(filter);
-        //   console.log(res, 'req');
-        //   return { data: res.data, success: true, total: 25 };
-        // }}
         dataSource={data}
         columns={columns}
         rowSelection={{
@@ -226,7 +209,7 @@ const TableList = ({ order, dispatch }) => {
             </Space>
           </Space>
         )}
-      />
+      />)}
     </PageHeaderWrapper>
   );
 };

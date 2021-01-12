@@ -60,7 +60,7 @@ export default [
                     component: './Order/OrderList',
                   },
                   {
-                    path: '/Order/OrderList/Detail',
+                    path: '/Order/OrderList/Detail/:id',
                     component: './Order/OrderList/Detail',
                   },
                 ],
@@ -109,7 +109,7 @@ export default [
                     component:'./Customers/CustomerList'
                   },
                   {
-                    path:'/Customers/CustomerList/Detail',
+                    path:'/Customers/CustomerList/Detail/:id',
                     component:'./Customers/CustomerList/Detail'
                   }
                 ]
@@ -120,12 +120,7 @@ export default [
                 path: '/SysSetting',
                 component: './SysSetting',
               },
-              {
-                name: 'list.table-list',
-                icon: 'table',
-                path: '/list',
-                component: './ListTableList',
-              },
+              
               {
                 component: './404',
               },

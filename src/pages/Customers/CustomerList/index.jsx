@@ -6,9 +6,9 @@ import ProForm, {
   ProFormDateRangePicker,
   ProFormText,
 } from '@ant-design/pro-form';
-import { Table, Card, Space, Badge, Button, Select, DatePicker, Input, Tag } from 'antd';
+import { Card, Space, Badge, Button, Select, DatePicker, Input, Tag, Spin } from 'antd';
 import styles from './index.less';
-import { getCustomer, getCustomerHome } from '@/services/customer';
+import {  getCustomerHome } from '@/services/customer';
 import { history, connect } from 'umi';
 
 
@@ -64,10 +64,12 @@ const columns = [
 const Customer = ({ dispatch, user }) => {
   const [filter, setFilter] = useState({});
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true)
 
   useEffect(async () => {
     const res = await getCustomerHome(filter);
     setData(res.data)
+    setLoading(false)
     console.log(filter);
   }, [filter]);
   return (
@@ -77,6 +79,7 @@ const Customer = ({ dispatch, user }) => {
           <ProForm
             onFinish={async (values) => {
               setFilter(values);
+              setLoading(true)
             }}
           >
             <ProForm.Group>
@@ -119,7 +122,9 @@ const Customer = ({ dispatch, user }) => {
             </ProForm.Group>
           </ProForm>
           </div>
-        <ProTable
+       {loading?<div style={{textAlign:'center'}}>
+         <Spin size="large"/>
+       </div>:( <ProTable
           columns={columns}
           rowKey={(record) => record.ID}
           dataSource={data}
@@ -132,7 +137,7 @@ const Customer = ({ dispatch, user }) => {
               },
             };
           }}
-        />
+        />)}
       </Card>
     </PageHeaderWrapper>
   );
