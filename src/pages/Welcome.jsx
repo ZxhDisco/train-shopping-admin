@@ -1,59 +1,266 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ProCard from '@ant-design/pro-card';
-import { TinyColumn  } from '@ant-design/charts';
+import ProList from '@ant-design/pro-list';
+import ProTable from '@ant-design/pro-table';
+import { TinyColumn, TinyLine, Progress, Column, TinyArea } from '@ant-design/charts';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { Statistic, Space } from 'antd';
+import styles from './Welcome.less';
+import { connect } from 'umi'
+
+const index = ({ dispatch, orders, sales, visitors, hots, report }) => {
+  let range = { 'filter[start]': '2020-09-07 00:00', 'filter[end]': '2020-09-17 00:00' };
+  useEffect(async() => 
+ { await dispatch({
+    type:"reports/queryData",
+    payload: range  
+  })
+  await dispatch({
+    type:"reports/queryReports",
+    payload: range  
+  })}
+  , []);
+
+  let visitCount = 0
+  let saleCount = 0
+  let orderCount = 0
+  let data1 = []
+  let data2 = []
+  let hotData = []
+  const CountVis = () => {
+    visitors.map(item => {
+      visitCount = visitCount*1 + item.value*1
+      data1.push(item.value)
+    }) 
+  }
+  const CountSale = () => {
+    sales.map(item => {
+      saleCount = saleCount*1 + item.value
+    })
+  }
+  const CountOrders = () => {
+    orders.map(item => {
+      orderCount = orderCount*1 + item.value
+      data2.push(item.value)
+    })
+  }
+  const SortOrders = (array) => {
+    for (let i=array.length;i>0;i--){
+      for (let j=0;j<i;j++){
+          if (array[j]?.count<array[j+1]?.count){
+              var temp=array[j];
+              array[j]=array[j+1];
+              array[j+1]=temp;
+          }
+      }
+  }
+     return array;
+  }
 
 
-export default () => {
-  var data = [274, 337, 81, 497, 666, 219, 269];
-  var config = {
-      height: 64,
-      width: 240,
-      autoFit: false,
-      data: data,
-      tooltip: {
-          customContent: function customContent(x, data) {
-              var _data$, _data$$data;
-              return 'NO.'
-                  .concat(x, ': ')
-                  .concat((_data$ = data[0]) === null || _data$ === void 0
-                  ? void 0
-                  : (_data$$data = _data$.data) === null || _data$$data === void 0
-                      ? void 0
-                      : _data$$data.y.toFixed(2));
-          },
+  CountVis()
+  CountSale()
+  CountOrders()
+  SortOrders(hots)
+;
+  
+  var config1 = {
+    height: 60,
+    width: 220,
+    autoFit: false,
+    data: data1,
+    tooltip: {
+      customContent: function customContent(x, data) {
+        var _data$, _data$$data;
+        return 'NO.'
+          .concat(x, ': ')
+          .concat(
+            (_data$ = data[0]) === null || _data$ === void 0
+              ? void 0
+              : (_data$$data = _data$.data) === null || _data$$data === void 0
+              ? void 0
+              : _data$$data.y.toFixed(2),
+          );
       },
+    },
   };
 
+  var config2 = {
+    height: 60,
+    width: 220,
+    autoFit: false,
+    data: data2,
+    smooth: true,
+    areaStyle: { fill: '#000' },
+  };
 
+  var config3 = {
+    height: 40,
+    width: 220,
+    autoFit: false,
+    percent: 0.7,
+    color: ['#5B8FF9', '#E8EDF3'],
+  };
+
+  var config4 = {
+    data: orders,
+    xField: 'datetime',
+    yField: 'value',
+    label: {
+      position: 'middle',
+      style: {
+        fill: '#FFFFFF',
+        opacity: 0.6,
+        width: 300,
+      },
+    },
+    meta: {
+      datetime: { alias: '日期' },
+      value: { alias: '销售额' },
+    },
+  };
+
+  const columns = [
+    {
+      dataIndex: 'index',
+      valueType: 'indexBorder',
+      align:'center'
+    },
+    {
+      dataIndex: 'title',
+      valueType: 'text',
+      align:'center'
+    },
+    {
+      dataIndex: 'count',
+      valueType: 'text',
+      align:'center'
+    }
+
+  ]
+  
   return (
     <>
-      <ProCard gutter={15} title="24栅格" style={{backgroundColor:'#f0f2f5'}}>
-        <ProCard colSpan={6} layout="center" bordered style={{height:200}}>
-          <TinyColumn {...config}/>
+      <ProCard gutter={15} ghost style={{ position: 'relative' }}>
+        <ProCard colSpan={6} layout="default" bordered >
+          <Statistic
+            title={
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>总销售额</span>
+                <InfoCircleOutlined />
+              </div>
+            }
+            value={saleCount}
+            style={{height:50 ,marginBottom:20}}
+          />
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              height:80
+            }}
+          >
+            <div style={{ display: 'flex', margin:' 30px 0'}}>
+              周同比<div className={styles.triangleUp}></div> 12%
+            </div>
+            <div style={{ display: 'flex', margin:' 30px 0' }}>
+              日环比<div className={styles.triangleDown}></div> 11%
+            </div>
+          </div>
+          <div style={{ borderTop: '1px solid #000' }}>
+            <div style={{marginTop:10}}>日均销售额:  &nbsp;&nbsp;{(saleCount/sales.length).toFixed(2)}</div>
+          </div>
         </ProCard>
-        <ProCard colSpan={6} layout="center" bordered>
-          <TinyColumn {...config}/>
+        <ProCard colSpan={6} layout="default" bordered>
+          <Statistic
+            title={
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>订单数量</span>
+                <InfoCircleOutlined />
+              </div>
+            }
+            value={orderCount}
+            style={{height:50 ,marginBottom:20}}
+          />
+          <TinyArea {...config2} style={{height:80 }} />
+          <div style={{ marginTop: 0, borderTop: '1px solid #000' }}>
+            <div style={{marginTop:10}}>日均订单量：&nbsp;&nbsp;{Math.floor(orderCount/orders.length)}</div>
+          </div>
         </ProCard>
-        <ProCard colSpan={6} layout="center" bordered>
-          colSpan-6
+        <ProCard colSpan={6} layout="default" bordered>
+          <Statistic
+            title={
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>访问总数</span>
+                <InfoCircleOutlined />
+              </div>
+            }
+            precision={2}
+            value={visitCount}
+            style={{height:50 ,marginBottom:20}}
+          />
+          <TinyColumn {...config1} style={{height:80 }} />
+          <div style={{ borderTop: '1px solid #000' }}>
+            <div style={{marginTop:10}}>日均访问数: &nbsp;&nbsp;{Math.floor(visitCount/visitors.length)}</div>
+          </div>
         </ProCard>
-        <ProCard colSpan={6} layout="center" bordered>
-          colSpan-6
+        <ProCard colSpan={6} layout="default" bordered>
+          <Statistic
+            title={
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>未发货订单数</span>
+                <InfoCircleOutlined />
+              </div>
+            }
+            value={93}
+            style={{height:50 ,marginBottom:20}}
+          />
+          <div style={{height:80 }}>
+            <Progress {...config3} style={{paddingTop:25}} />
+          </div>        
+          <div style={{ borderTop: '1px solid #000' }}>
+            <div style={{marginTop:10}}>发货完成率：&nbsp;&nbsp;76%</div>
+          </div>
         </ProCard>
       </ProCard>
 
-      <ProCard style={{ marginTop: 8 }} gutter={15} ghost>
-        <ProCard colSpan={24} layout="center" bordered>
-          {/* <Column {...config}/> */}
-        </ProCard>
+      <ProCard  style={{ marginTop: 15 }} tabs={{ activeKey: 'tab1' }}>
+        <ProCard.TabPane key="tab1" tab="订单趋势">
+          <ProCard
+            colSpan={16}
+            title={<span style={{ fontWeight: '700' }}>订单增长趋势</span>}
+            // style={{ height: 400 }}
+          >
+            <Column {...config4}  />
+          </ProCard>
+          <ProCard colSpan={8}  title={<span style={{ fontWeight: '700' }}>商品销售数排行</span>}>
+            <ProTable
+              dataSource={hots}
+              columns={columns}
+              search={false}
+              toolBarRender={false}
+              pagination={{pageSize:5}}
+              rowKey={record=>record.title}
+            />
+          </ProCard>
+        </ProCard.TabPane>
       </ProCard>
 
-      <ProCard style={{ marginTop: 8 }} gutter={15} ghost>
-        <ProCard colSpan={12} bordered layout="center">
-          Auto
+      <ProCard style={{ marginTop: 15 }} gutter={15} ghost>
+        <ProCard colSpan={12} bordered layout="default" tabs={{ activeKey: 'tab2' }}>
+          <ProCard.TabPane key="tab2" tab="用户日增长">
+            <ProCard colSpan={16} title={<span>昨日新增用户数</span>} style={{ height: 300 }}>
+              <TinyLine {...config2} />
+            </ProCard>
+          </ProCard.TabPane>
         </ProCard>
-        <ProCard colSpan={12} bordered layout="center">
-          Auto
+
+        <ProCard colSpan={12} bordered layout="default" tabs={{ activeKey: 'tab3' }}>
+          <ProCard.TabPane key="tab3" tab="销售额日增长">
+            <ProCard colSpan={16} title={<span>今日销售额</span>} style={{ height: 300 }}>
+              <TinyLine {...config2} />
+            </ProCard>
+          </ProCard.TabPane>
         </ProCard>
       </ProCard>
     </>
@@ -61,5 +268,7 @@ export default () => {
 };
 
 
-
-
+const mapStateProps = ({ reports:{orders, sales, visitors, hots,report} }) => {
+  return { orders, sales, visitors, hots, report };
+};
+export default connect(mapStateProps)(index);

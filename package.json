@@ -62,7 +62,7 @@
     "classnames": "^2.2.6",
     "dva-loading": "^3.0.22",
     "lodash": "^4.17.11",
-    "moment": "^2.25.3",
+    "moment": "^2.29.1",
     "omit.js": "^2.0.2",
     "qs": "^6.9.0",
     "rc-tween-one": "^2.7.3",

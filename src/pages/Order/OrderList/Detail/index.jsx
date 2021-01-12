@@ -12,6 +12,7 @@ import CostMsg from './components/CostMsg';
 import OrderMsg from './components/OrderMsg';
 
 const index = ({ user, dispatch, match }) => {
+  const [loading, setLoading] = useState(true)
   useEffect(async() => {
     await dispatch({
       type: 'order/getDetail',
@@ -19,6 +20,7 @@ const index = ({ user, dispatch, match }) => {
         id: match.params.id,
       },
     });
+    setLoading(false)
   }, [reload]);
   const { reload , setRelaod } = useState(false)
   const { post_status, ID } = user;
@@ -64,7 +66,9 @@ const index = ({ user, dispatch, match }) => {
         </div>
         <ProFormCheckbox.Group name="checkbox" options={['发消息给客户']} />
       </ModalForm>
-      <ProCard gutter={15} className={styles.bgcAll} bordered>
+      {loading?<div style={{textAlign:'center'}}>
+         <Spin size="large"/>
+       </div>:(<ProCard gutter={15} className={styles.bgcAll} bordered>
         <ProCard split="horizontal" colSpan="65%" className={styles.bgcLeft} bordered>
           <ProCard title="订单总览" style={{ marginBottom: 15 }} bordered>
             <GoodMsg user={user} />
@@ -79,7 +83,7 @@ const index = ({ user, dispatch, match }) => {
         <ProCard title="订单信息" className={styles.orderRight} bordered>
           <OrderMsg user={user} />
         </ProCard>
-      </ProCard>
+      </ProCard>)}
     </PageHeaderWrapper>
   );
 };
