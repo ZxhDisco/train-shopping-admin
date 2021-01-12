@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
+import ProForm, {
+  ProFormSelect,
+  ProFormDateRangePicker,
+  ProFormText,
+} from '@ant-design/pro-form';
 import { Table, Card, Space, Badge, Button, Select, DatePicker, Input, Tag } from 'antd';
 import styles from './index.less';
-import { getCustomer } from '@/services/customer';
-import { history,connect } from 'umi';
-import CustomerMsg from '@/pages/Order/OrderList/Detail/components/CustomerMsg';
+import { getCustomer, getCustomerHome } from '@/services/customer';
+import { history, connect } from 'umi';
 
-const { Option } = Select;
-const { RangePicker } = DatePicker;
 
 const columns = [
   {
@@ -26,7 +28,7 @@ const columns = [
     valueType: 'text',
     align: 'center',
     render: (_, record) => {
-      return <span>{record.billing_address.city}</span>;
+      return <span>{record.country==='CN'?'中国':(record.country==='US'?'美国':'其他')}</span>;
     },
   },
   {
@@ -60,50 +62,73 @@ const columns = [
 ];
 
 const Customer = ({ dispatch, user }) => {
+  const [filter, setFilter] = useState({});
+  const [data, setData] = useState([]);
+
+  useEffect(async () => {
+    const res = await getCustomerHome(filter);
+    setData(res.data)
+    console.log(filter);
+  }, [filter]);
   return (
     <PageHeaderWrapper>
       <Card bordered={false}>
-        {/*         <Space style={{ marginBottom: '35px' }}>
-          <Select defaultValue=" 全部订单状态  ">
-            <Option value="all"> 全部订单状态 </Option>
-            <Option value="进行中">进行中 </Option>
-            <Option value="已完成">已完成 </Option>
-            <Option value="已取消">已取消 </Option>
-          </Select>
-          &nbsp;&nbsp;&nbsp;
-          <Select defaultValue=" 全部发货状态  ">
-            <Option value="all"> 全部发货状态 </Option>
-            <Option value="已发货">已发货</Option>
-            <Option value="已取消">已取消</Option>
-          </Select>
-          &nbsp;&nbsp;&nbsp;
-          <RangePicker />
-          &nbsp;&nbsp;&nbsp;
-          <Input placeholder="请输入订单编号/支付编号/商品名/SKU/邮箱" style={{ width: '20rem' }} />
-          &nbsp;&nbsp;&nbsp;
-          
-          &nbsp;&nbsp;&nbsp;
-          <Button>重置</Button>
-        </Space> */}
-
+        <div className={styles.searchContent}>
+          <ProForm
+            onFinish={async (values) => {
+              setFilter(values);
+            }}
+          >
+            <ProForm.Group>
+              <ProFormSelect
+                name="filter[subscribed]"
+                placeholder="全部订阅状态"
+                width="small"
+                valueEnum = {{
+                  1: {
+                    text: <Tag color="blue">已订阅</Tag>,
+                    status: 'true',
+                  },
+                  0: {
+                    text: <Tag color="orange">未订阅</Tag>,
+                    status: 'false',
+                  }
+                }}
+              />
+              <ProFormSelect
+                name="filter[country]"
+                placeholder="  全部地区  "
+                width="small"
+                valueEnum={{
+                  CN: {
+                    text: <span >中国</span>,
+                    status: 'CN',
+                  },
+                  US: {
+                    text: <span >美国</span>,
+                    status: 'US',
+                  },
+                }}
+              />
+              <ProFormDateRangePicker name="filter[date]" />
+              <ProFormText
+                name="filter[search]"
+                placeholder="请输入姓名/邮箱/手机"
+              />
+              &nbsp;&nbsp;
+            </ProForm.Group>
+          </ProForm>
+          </div>
         <ProTable
           columns={columns}
           rowKey={(record) => record.ID}
-          request={async (params, sorter, filter) => {
-            const res = await getCustomer({ ...params, sorter, filter });
-            console.log(res);
-            return { data: res.data, success: true, total: 25 };
-          }}
+          dataSource={data}
           toolBarRender={false}
           search={false}
           onRow={(record) => {
             return {
               onClick: () => {
-                history.push('CustomerList/Detail');
-                dispatch({
-                  type: 'customer/getUserById',
-                  payload: { id: record.ID },
-                });
+                history.push('CustomerList/Detail/' + record.ID);
               },
             };
           }}
@@ -116,4 +141,3 @@ const mapStateProps = ({ customer: { user } }) => {
   return { user };
 };
 export default connect(mapStateProps)(Customer);
-

@@ -3,9 +3,7 @@ import ProList from '@ant-design/pro-list';
 
 
 const CustomerMsg = ({user}) => {
-  console.log(user,'CustomerMsg');
-    const { cost } = user.shippings&&user.shippings[0] || {}
-    const { billing_address,billing_user_name } = user.billing_address && user
+    const { billing_address={},billing_user_name } = user
     const {  phone, postcode, email, address_1, state_name } = billing_address
     let address = state_name + address_1
 

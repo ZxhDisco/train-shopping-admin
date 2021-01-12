@@ -1,5 +1,4 @@
 import { query as queryOrders, queryById, updateStatus } from '@/services/order';
-import {getCustomer} from '@/services/customer'
 
 const OrderModel = {
   namespace: 'order',
@@ -18,16 +17,14 @@ const OrderModel = {
         payload: response,
       });
     },
-    *getOrderById({ payload: { id } }, { call, put }) { 
-      const result = yield call(getCustomer)
-      console.log(result,'result');
+    *getDetail({ payload: { id } }, { call, put }) { 
       const res = yield call(queryById, id);    
       yield put({ type: 'detail', payload: res });
     },
     *updateOrderStatus({payload:{params, params2}},{ call, put}){
-      console.log(params, params2);
+      console.log('updateOrderStatus');
       const res = yield call(updateStatus,{params,params2})
-      
+      // yield put({ type: 'getOrderById', payload: params });
     }
   },
   reducers: {
