@@ -14,12 +14,15 @@ const index = ({ dispatch }) => {
   const toChildren_1 = (value) => {
     let values = String(value);
     children = values.split(',');
+    console.log(children);
   };
+
   //分类多选器
   let children2 = [];
   const toChildren_2 = (value) => {
     let values_2 = String(value);
     children2 = values_2.split(',');
+    console.log(children2);
   };
   //提交表单
   const onFinish = (values) => {
@@ -27,7 +30,7 @@ const index = ({ dispatch }) => {
     dispatch({
       type: 'goodList/addGood',
       payload: {
-        values,
+        values: { ...values, content: content },
       },
     });
   };
@@ -114,7 +117,7 @@ const index = ({ dispatch }) => {
               <Radio value="private">下架</Radio>
             </Radio.Group>
           </Form.Item>
-          <span>商品图片:</span>
+          <div style={{ marginBottom: '10px', marginLeft: '31px' }}>商品图片:</div>
           <AddGoodPic />
         </Card>
         <Card style={{ marginTop: '15px' }}>

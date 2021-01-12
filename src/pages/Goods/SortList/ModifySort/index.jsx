@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Card, Form, Input, Button, Image, Spin } from 'antd';
 import { Editor } from '@tinymce/tinymce-react';
@@ -6,8 +6,8 @@ import { connect, history } from 'umi';
 
 const index = ({ record, dispatch, match, loading }) => {
   console.log(record);
-  //富文本内容
-  let content = record.description;
+  //富文本赋初值
+  const [title, setTitle] = useState(null);
   const [form] = Form.useForm();
   useEffect(async () => {
     await dispatch({
@@ -19,6 +19,7 @@ const index = ({ record, dispatch, match, loading }) => {
   }, []);
   useEffect(() => {
     form.setFieldsValue(record);
+    setTitle(record?.description);
   }, [record]);
 
   //form布局
@@ -53,7 +54,7 @@ const index = ({ record, dispatch, match, loading }) => {
     dispatch({
       type: 'category/updateCategory',
       payload: {
-        values: { ...values, description: content },
+        values: { ...values, description: title },
         id: record.id,
       },
     });
@@ -82,28 +83,30 @@ const index = ({ record, dispatch, match, loading }) => {
             />
             <Button style={{ marginLeft: '10px' }}>更换图片</Button>
             <h3 style={{ marginTop: '10px' }}>分类描述</h3>
-            <Editor
-              apiKey="le7m6pa3qo2m11ndjkq0jwkxezfw0n3vtrv19ql58732b55f"
-              initialValue={record.description}
-              init={{
-                height: 300,
-                language: 'zh_CN',
-                menubar: false,
-                plugins: [
-                  'advlist autolink lists link image',
-                  'charmap print preview anchor help',
-                  'searchreplace visualblocks code',
-                  'insertdatetime media table paste wordcount',
-                ],
-                toolbar:
-                  'undo redo | formatselect | bold italic | link image | \
-                      alignleft aligncenter alignright | \
-                      bullist numlist outdent indent | help',
-              }}
-              onEditorChange={(value) => {
-                content = value;
-              }}
-            />
+            {(title || title === '') && !loading && (
+              <Editor
+                apiKey="le7m6pa3qo2m11ndjkq0jwkxezfw0n3vtrv19ql58732b55f"
+                initialValue={record.description}
+                init={{
+                  height: 300,
+                  language: 'zh_CN',
+                  menubar: false,
+                  plugins: [
+                    'advlist autolink lists link image',
+                    'charmap print preview anchor help',
+                    'searchreplace visualblocks code',
+                    'insertdatetime media table paste wordcount',
+                  ],
+                  toolbar:
+                    'undo redo | formatselect | bold italic | link image | \
+                        alignleft aligncenter alignright | \
+                        bullist numlist outdent indent | help',
+                }}
+                onEditorChange={(value) => {
+                  setTitle(value);
+                }}
+              />
+            )}
           </Card>
           {/* <Card style={{ marginTop: '15px' }}>
             <h3>关联商品</h3>

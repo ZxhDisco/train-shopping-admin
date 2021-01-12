@@ -8,7 +8,7 @@ import ModGoodPic from './components/ModGoodPic';
 
 const index = ({ dispatch, record, usefulRecord, loading, match }) => {
   //富文本赋初值
-  let content = '';
+  const [title, setTitle] = useState(null);
   useEffect(async () => {
     await dispatch({
       type: 'goodList/getGood',
@@ -18,9 +18,8 @@ const index = ({ dispatch, record, usefulRecord, loading, match }) => {
     });
   }, []);
   useEffect(() => {
-    console.log(record);
     form.setFieldsValue(record);
-    content = record?.post_content;
+    setTitle(record?.post_content);
   }, [record]);
   //表单方法声明
   const [form] = Form.useForm();
@@ -41,6 +40,7 @@ const index = ({ dispatch, record, usefulRecord, loading, match }) => {
   const toChildren_2 = (value) => {
     let values_2 = String(value);
     children2 = values_2.split(',');
+    console.log(children2);
   };
   //提交表单
   const onFinish = (values) => {
@@ -48,7 +48,7 @@ const index = ({ dispatch, record, usefulRecord, loading, match }) => {
     dispatch({
       type: 'goodList/updateGood',
       payload: {
-        params: { ...values, content: content },
+        params: { ...values, content: title },
         id: usefulRecord.ID,
       },
     });
@@ -138,33 +138,35 @@ const index = ({ dispatch, record, usefulRecord, loading, match }) => {
               </Radio.Group>
             </Form.Item>
 
-            <span>商品图片:</span>
+            <div style={{ marginBottom: '10px', marginLeft: '31px' }}>商品图片:</div>
             <ModGoodPic />
           </Card>
           <Card style={{ marginTop: '15px' }}>
             <h3>商品详情</h3>
-            <Editor
-              apiKey="le7m6pa3qo2m11ndjkq0jwkxezfw0n3vtrv19ql58732b55f"
-              initialValue={content}
-              init={{
-                height: 300,
-                language: 'zh_CN',
-                menubar: false,
-                plugins: [
-                  'advlist autolink lists link image',
-                  'charmap print preview anchor help',
-                  'searchreplace visualblocks code',
-                  'insertdatetime media table paste wordcount',
-                ],
-                toolbar:
-                  'undo redo | formatselect | bold italic | link image | \
+            {(title || title === '') && !loading && (
+              <Editor
+                apiKey="le7m6pa3qo2m11ndjkq0jwkxezfw0n3vtrv19ql58732b55f"
+                initialValue={title}
+                init={{
+                  height: 300,
+                  language: 'zh_CN',
+                  menubar: false,
+                  plugins: [
+                    'advlist autolink lists link image',
+                    'charmap print preview anchor help',
+                    'searchreplace visualblocks code',
+                    'insertdatetime media table paste wordcount',
+                  ],
+                  toolbar:
+                    'undo redo | formatselect | bold italic | link image | \
                       alignleft aligncenter alignright | \
                       bullist numlist outdent indent | help',
-              }}
-              onEditorChange={(values) => {
-                content = values;
-              }}
-            />
+                }}
+                onEditorChange={(values) => {
+                  setTitle(values);
+                }}
+              />
+            )}
           </Card>
           <Card
             style={{
