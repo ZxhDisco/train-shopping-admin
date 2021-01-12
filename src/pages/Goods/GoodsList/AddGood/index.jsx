@@ -14,20 +14,23 @@ const index = ({ dispatch }) => {
   const toChildren_1 = (value) => {
     let values = String(value);
     children = values.split(',');
+    console.log(children);
   };
+
   //分类多选器
   let children2 = [];
   const toChildren_2 = (value) => {
     let values_2 = String(value);
     children2 = values_2.split(',');
+    console.log(children2);
   };
   //提交表单
   const onFinish = (values) => {
-    history.go(-1);
+    history.push('/Goods/GoodsList/');
     dispatch({
       type: 'goodList/addGood',
       payload: {
-        values,
+        values: { ...values, content: content },
       },
     });
   };
@@ -78,6 +81,12 @@ const index = ({ dispatch }) => {
           <Form.Item label="SKU" name="sku" rules={[{ required: true }]}>
             <Input style={{ width: '50%' }} placeholder="请输入商品SKU" />
           </Form.Item>
+          <Form.Item name="manage_stock" label="管理库存" rules={[{ required: true }]}>
+            <Radio.Group>
+              <Radio value="yes">是</Radio>
+              <Radio value="no">否</Radio>
+            </Radio.Group>
+          </Form.Item>
           <Form.Item label="商品分类">
             <Select
               mode="tags"
@@ -108,8 +117,8 @@ const index = ({ dispatch }) => {
               <Radio value="private">下架</Radio>
             </Radio.Group>
           </Form.Item>
-          <span>商品图片:</span>
-          {/* <AddGoodPic /> */}
+          <div style={{ marginBottom: '10px', marginLeft: '31px' }}>商品图片:</div>
+          <AddGoodPic />
         </Card>
         <Card style={{ marginTop: '15px' }}>
           <h3>商品详情</h3>

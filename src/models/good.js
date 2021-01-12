@@ -1,11 +1,23 @@
-import { getGoodList, getGood, updateGood, addGood } from '@/services/good';
+import {
+  getGoodList,
+  getGood,
+  updateGood,
+  addGood,
+  searchGood,
+  deleteGood,
+  createGoodCategoryId,
+  createGoodTagsId,
+} from '@/services/good';
 
 const GlobalModel = {
   namespace: 'goodList',
   state: {
     productsList: {},
     recordShow: {},
-    usefulRecord: {},
+    usefulRecord: { tags: [], categories: [], gallery: [] },
+    imgs: [],
+    tempId: null,
+    tempId2: null,
   },
   effects: {
     *getProducts(_, { call, put }) {
@@ -17,10 +29,14 @@ const GlobalModel = {
         },
       });
     },
-    *getGood({ payload }, { call, put }) {
-      const res = yield call(getGood, payload);
+    *getGood({ payload: { id } }, { call, put }) {
+      const res = yield call(getGood, id);
       yield put({
         type: 'saveGood',
+        payload: res,
+      });
+      yield put({
+        type: 'saveImg',
         payload: res,
       });
     },
@@ -36,6 +52,35 @@ const GlobalModel = {
         type: 'getProducts',
       });
     },
+    *searchGood({ payload }, { call, put }) {
+      const res = yield call(searchGood, payload);
+      console.log(res, '123');
+      yield put({
+        type: 'saveSearchGood',
+        payload: res,
+      });
+    },
+    *deleteGood({ payload }, { call, put }) {
+      yield call(deleteGood, payload);
+      yield put({
+        type: 'getProducts',
+      });
+    },
+
+    *createGoodCategoryId({ payload }, { call, put }) {
+      const res = yield call(createGoodCategoryId, payload);
+      yield put({
+        type: 'saveTempId',
+        payload: res,
+      });
+    },
+    *createGoodTagsId({ payload }, { call, put }) {
+      const res = yield call(createGoodTagsId, payload);
+      yield put({
+        type: 'saveTempId2',
+        payload: res,
+      });
+    },
   },
   reducers: {
     saveProducts(state, { payload: { response } }) {
@@ -45,26 +90,43 @@ const GlobalModel = {
       };
     },
     saveGood(state, { payload }) {
+      let Imgs = payload.gallery.map((item) => {
+        return { uid: `${item.url}`, url: `${item.url}` };
+      });
       let useRecord = {};
       useRecord.title = payload.title;
       useRecord.price = payload.price;
       useRecord.regular_price = payload.regular_price;
       useRecord.sku = payload.sku;
       useRecord.post_status = payload.post_status;
+      useRecord.manage_stock = payload.manage_stock;
+      useRecord.post_content = payload.post_content;
+      useRecord.gallery = payload.gallery;
       return {
         ...state,
         recordShow: useRecord,
         usefulRecord: payload,
+        imgs: Imgs,
       };
     },
-    selectGood(state, _) {
-      let newProductsList = JSON.parse(JSON.stringify(state.productsList));
-      const res = newProductsList.filter((item) => {
-        return item.title.includes('p');
-      });
+    saveSearchGood(state, { payload }) {
       return {
         ...state,
-        productsList: res,
+        productsList: payload,
+      };
+    },
+    saveTempId(state, { payload }) {
+      console.log(payload.id);
+      return {
+        ...state,
+        tempId: payload.id,
+      };
+    },
+    saveTempId2(state, { payload }) {
+      console.log(payload.id);
+      return {
+        ...state,
+        tempId2: payload.id,
       };
     },
   },
