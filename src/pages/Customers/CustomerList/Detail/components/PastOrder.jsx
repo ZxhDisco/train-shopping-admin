@@ -7,6 +7,7 @@ import { connect } from 'umi'
 const PastOrder = ({ ID, list, dispatch }) => {
   const columns = [
     {
+      title: <a>商品</a>,
       dataIndex: 'order_item_name',
       valueType: 'text',
       width: 150,
@@ -19,6 +20,7 @@ const PastOrder = ({ ID, list, dispatch }) => {
       align: 'center',
     },
     {
+      title:<a>规格</a>,
       dataIndex: 'order_item_type',
       valueType: 'text',
       align: 'center',
@@ -30,6 +32,7 @@ const PastOrder = ({ ID, list, dispatch }) => {
       
     },
     {
+      title:<a>库存</a>,
       dataIndex: 'qty',
       valueType: 'text',
       render: (_,record) => (
@@ -40,6 +43,7 @@ const PastOrder = ({ ID, list, dispatch }) => {
       align: 'center',
     },
     {
+      title:<a>合计</a>,
       dataIndex: 'line_total',
       valueType: 'money',
       align: 'center',
@@ -50,6 +54,7 @@ const PastOrder = ({ ID, list, dispatch }) => {
       ),
     },
     {
+      title:<a>折扣</a>,
       dataIndex: 'line_tax',
       valueType: 'money',
       align: 'center',
@@ -73,7 +78,7 @@ const PastOrder = ({ ID, list, dispatch }) => {
     
     return (
       <div>
-          {data?.map((item, index) => (<div>
+          {data?.map((item, index) => (<div key={index+'##'}>
             <div style={{display:'flex', justifyContent:'space-between' }}>
                <div>订单编号：<a>{item.number}</a></div>
                <div>{item.paid_date}</div>
@@ -82,6 +87,7 @@ const PastOrder = ({ ID, list, dispatch }) => {
               <Table
                 columns={columns}
                 dataSource={item.line_items}
+                rowKey={record=>record.number}
               />
            </div>))
            }

@@ -73,7 +73,7 @@ const Customer = ({ dispatch, user }) => {
     console.log(filter);
   }, [filter]);
   return (
-    <PageHeaderWrapper>
+    <PageHeaderWrapper breadcrumb={false}>
       <Card bordered={false}>
         <div className={styles.searchContent}>
           <ProForm
@@ -113,7 +113,7 @@ const Customer = ({ dispatch, user }) => {
                   },
                 }}
               />
-              <ProFormDateRangePicker name="filter[date]" />
+              <ProFormDateRangePicker name="filter[date][]" />
               <ProFormText
                 name="filter[search]"
                 placeholder="请输入姓名/邮箱/手机"

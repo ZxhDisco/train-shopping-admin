@@ -20,7 +20,7 @@ const index = () => {
     resetPassword(values);
   };
   return (
-    <PageHeaderWrapper>
+    <PageHeaderWrapper breadcrumb={false}>
       <Card>
         <Tabs tabPosition="left" defaultActiveKey="1" size="large">
           <TabPane tab="安全设置" key="1">
@@ -65,13 +65,13 @@ const index = () => {
           <TabPane tab="支付设置" key="3">
             <PageHeader title="支付方式">
               <Card>
-                <div style={{ border: '1px solid blue' }}>
+                <div>
                   <span>快速结账</span>
                 </div>
                 <br />
                 <Space
                   direction="vertical"
-                  style={{ borderRight: '1px solid red', padding: '10px 120px 10px 20px' }}
+                  style={{ padding: '10px 120px 10px 20px' }}
                 >
                   <div>
                     <Switch /> <span>sandbox</span>

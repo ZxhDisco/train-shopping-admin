@@ -18,7 +18,7 @@ const index = ({ user, dispatch, match }) => {
     setLoading(false)
   }, []);
   return (
-    <PageHeaderWrapper>
+    <PageHeaderWrapper title="顾客详情" breadcrumb={false}>
       {loading?<div style={{textAlign:'center'}}>
          <Spin size="large"/>
        </div>:(<ProCard gutter={15} className={styles.bgcAll} bordered>

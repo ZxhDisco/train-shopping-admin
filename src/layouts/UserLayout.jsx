@@ -30,7 +30,7 @@ const UserLayout = (props) => {
     <HelmetProvider>
         <Helmet>
           <title>{title}</title>
-          <meta name="description" content={title} />
+          {/* <meta name="description" content={title} /> */}
         </Helmet>
         <div className={styles.container}>
           <div className={styles.lang}>

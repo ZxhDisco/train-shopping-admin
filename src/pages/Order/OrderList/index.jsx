@@ -102,17 +102,16 @@ const TableList = ({ order, dispatch }) => {
     const res = await queryOrder(filter);
     setData(res.data)
     setLoading(false)
-    console.log(filter);
   }, [filter]);
 
+
   return (
-    <PageHeaderWrapper>
+    <PageHeaderWrapper
+      breadcrumb={false}
+    >
       <div className={styles.searchContent}>
         <ProForm
           onFinish={async (values) => {
-            if (values['filter[date]']) {
-              console.log(moment(values['filter[date]'][0]).format());        
-            }
             setFilter(values);
             setLoading(true)
           }}
@@ -156,7 +155,7 @@ const TableList = ({ order, dispatch }) => {
                 },
               }}
             />
-            <ProFormDateRangePicker name="filter[date]" />
+            <ProFormDateRangePicker name="filter[date][]" />
             <ProFormText
               name="filter[search]"
               placeholder="请输入订单编号/支付编号/商品名/SKU/邮箱"

@@ -48,7 +48,7 @@ const Address = ({ user }) => {
           <List
             dataSource={address_book}
             renderItem={(item, index) => (
-              <List.Item key={index}>
+              <List.Item key={index+'#'}>
                 <Space direction="vertical">
                   <h3>收货地址{index + 1}</h3>
                   <div
