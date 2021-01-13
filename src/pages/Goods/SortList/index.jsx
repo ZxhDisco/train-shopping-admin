@@ -77,14 +77,7 @@ const index = ({ categoryList, dispatch }) => {
   const pagination = {
     pageSize: 5,
   };
-  const routes = [
-    {
-      breadcrumbName: '首页',
-    },
-    {
-      breadcrumbName: '分类列表',
-    },
-  ];
+
   //form布局
   const layout = {
     labelCol: { span: 2 },
@@ -102,7 +95,6 @@ const index = ({ categoryList, dispatch }) => {
   };
   return (
     <PageHeaderWrapper
-      breadcrumb={{ routes }}
       title="分类列表"
       extra={[
         <Link to="./AddSort" key="link">

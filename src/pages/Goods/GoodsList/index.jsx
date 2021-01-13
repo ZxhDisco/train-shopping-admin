@@ -6,6 +6,7 @@ import { history } from 'umi';
 const { Option } = Select;
 
 const index = ({ dispatch, productData }) => {
+  console.log(productData);
   useEffect(() => {
     dispatch({
       type: 'goodList/getProducts',
@@ -51,7 +52,7 @@ const index = ({ dispatch, productData }) => {
       render: (_, record) => {
         return (
           <>
-            <Image width={50} src={record.image} />
+            <Image width={50} src={record.gallery[0]?.url || record.image} />
             <span style={{ marginLeft: '10px' }}>{record.title}</span>
           </>
         );
@@ -109,14 +110,7 @@ const index = ({ dispatch, productData }) => {
   const pagination = {
     pageSize: 5,
   };
-  const routes = [
-    {
-      breadcrumbName: '首页',
-    },
-    {
-      breadcrumbName: '商品列表',
-    },
-  ];
+
   //筛选
   const onFinish = (values) => {
     dispatch({
@@ -126,7 +120,6 @@ const index = ({ dispatch, productData }) => {
   };
   return (
     <PageHeaderWrapper
-      breadcrumb={{ routes }}
       title="商品列表"
       extra={[
         <Link to="./AddGood" key="link">

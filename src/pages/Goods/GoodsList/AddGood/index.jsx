@@ -6,7 +6,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import { connect, history } from 'umi';
 import AddGoodPic from './components/AddGoodPic';
 
-const index = ({ dispatch }) => {
+const index = ({ dispatch, submitImg }) => {
   let content = null;
 
   //标签多选器
@@ -49,19 +49,8 @@ const index = ({ dispatch }) => {
       span: 16,
     },
   };
-  const routes = [
-    {
-      breadcrumbName: '首页',
-    },
-    {
-      breadcrumbName: '商品列表',
-    },
-    {
-      breadcrumbName: '添加商品',
-    },
-  ];
   return (
-    <PageHeaderWrapper breadcrumb={{ routes }} title="添加商品">
+    <PageHeaderWrapper title="添加商品">
       <Form {...layout} name="basic" onFinish={onFinish}>
         <Card>
           <h3>基础信息</h3>
@@ -165,6 +154,8 @@ const index = ({ dispatch }) => {
   );
 };
 const mapStateToProps = ({ goodList }) => {
-  return {};
+  return {
+    submitImg: goodList.submitImg,
+  };
 };
 export default connect(mapStateToProps)(index);
