@@ -59,16 +59,7 @@ const Login = (props) => {
           return Promise.resolve();
         }}
       >
-        <Tabs activeKey={type} onChange={setType}>
-          <Tabs.TabPane
-            key="account"
-            tab={intl.formatMessage({
-              id: 'pages.login.accountLogin.tab',
-              defaultMessage: '账户密码登录',
-            })}
-          />
-        </Tabs>
-
+        <h1 style={{textAlign:'center', fontWeight:800, color:'#4276d3'}}>趣 购 物</h1>
         {status === 'error' && loginType === 'account' && !submitting && (
           <LoginMessage
             content={intl.formatMessage({

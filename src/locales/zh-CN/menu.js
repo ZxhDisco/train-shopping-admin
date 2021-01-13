@@ -55,5 +55,6 @@ export default {
   'menu.goods': '商品',
   'menu.goods.goodslist': '商品列表',
   'menu.goods.sortlist': '分类列表',
-  'menu.demo': 'demo'
+  'menu.order.allOrder': '订单列表',
+  'menu.customers.allCustomers':'顾客列表'
 };

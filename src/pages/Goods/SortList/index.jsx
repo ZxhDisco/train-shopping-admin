@@ -77,7 +77,6 @@ const index = ({ categoryList, dispatch }) => {
   const pagination = {
     pageSize: 5,
   };
-
   //form布局
   const layout = {
     labelCol: { span: 2 },
@@ -106,6 +105,7 @@ const index = ({ categoryList, dispatch }) => {
       style={{ marginTop: '-25px' }}
     >
       <Card bordered={false}>
+
         <Modal visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
           <p>是否确认删除本分类</p>
         </Modal>
@@ -125,6 +125,7 @@ const index = ({ categoryList, dispatch }) => {
             </Col>
           </Row>
         </Form>
+
 
         <Table
           columns={columns}

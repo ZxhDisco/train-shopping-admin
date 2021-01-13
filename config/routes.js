@@ -49,12 +49,21 @@ export default [
                   },
                 ],
               },
-
               {
+                path: '/Order',
                 name: 'order',
-                icon: 'icon-shangpinziliao24',
-                path: '/OrderList',
-                component: './OrderList',
+                icon: 'icon-shangpinziliao24',             
+                routes: [
+                  {
+                    path: '/Order/OrderList',
+                    name: 'allOrder',
+                    component: './Order/OrderList',
+                  },
+                  {
+                    path: '/Order/OrderList/Detail/:id',
+                    component: './Order/OrderList/Detail',
+                  },
+                ],
               },
               {
                 name: 'goods',
@@ -93,7 +102,17 @@ export default [
                 name: 'customers',
                 icon: 'icon-shouquanguanli24',
                 path: '/Customers',
-                component: './Customers',
+                routes: [
+                  {
+                    name:'allCustomers',
+                    path:'/Customers/CustomerList',
+                    component:'./Customers/CustomerList'
+                  },
+                  {
+                    path:'/Customers/CustomerList/Detail/:id',
+                    component:'./Customers/CustomerList/Detail'
+                  }
+                ]
               },
               {
                 name: 'sys.setting',
@@ -101,12 +120,7 @@ export default [
                 path: '/SysSetting',
                 component: './SysSetting',
               },
-              {
-                name: 'list.table-list',
-                icon: 'table',
-                path: '/list',
-                component: './ListTableList',
-              },
+              
               {
                 component: './404',
               },

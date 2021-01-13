@@ -105,10 +105,10 @@ const BasicLayout = (props) => {
       // breadcrumbRender={(routers = []) => [
       //   {
       //     path: '/',
-        //   breadcrumbName: formatMessage({
-        //     id: 'menu.home',
-        //   }),
-        // },
+      //     breadcrumbName: formatMessage({
+      //       id: 'menu.home',
+      //     }),
+      //   },
       //   ...routers,
       // ]}
       itemRender={(route, params, routes, paths) => {
@@ -116,7 +116,7 @@ const BasicLayout = (props) => {
         return first ? (
           <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
         ) : (
-          <span>{route.breadcrumbName}</span>
+          <a>{route.breadcrumbName}</a>
         );
       }}
       footerRender={() => defaultFooterDom}
