@@ -74,6 +74,7 @@ const GlobalModel = {
         type: 'saveTempId',
         payload: res,
       });
+      return res;
     },
     *createGoodTagsId({ payload }, { call, put }) {
       const res = yield call(createGoodTagsId, payload);
@@ -81,6 +82,7 @@ const GlobalModel = {
         type: 'saveTempId2',
         payload: res,
       });
+      return res;
     },
   },
   reducers: {

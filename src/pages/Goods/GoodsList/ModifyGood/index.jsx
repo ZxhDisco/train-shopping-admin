@@ -56,12 +56,11 @@ const index = ({ dispatch, record, usefulRecord, loading, match, tempId, tempId2
     let values = String(value);
     children = values.split(',');
     if (children.length > tagsId.length) {
-      dispatch({
+      const tag_ = await dispatch({
         type: 'goodList/createGoodTagsId',
         payload: { name: children[children.length - 1] },
       });
-      await setTagsId([...tagsId, { id: tempId2 }]);
-      console.log(tempId2);
+      setTagsId([...tagsId, { id: tag_.id }]);
     } else if (children.length < tagsId.length) {
       let tempTags = JSON.parse(JSON.stringify(tagsId));
       tempTags.splice(tempTags.length - 1, 1);
@@ -74,12 +73,11 @@ const index = ({ dispatch, record, usefulRecord, loading, match, tempId, tempId2
     let values_2 = String(value);
     children2 = values_2.split(',');
     if (children2.length > categoryId.length) {
-      dispatch({
+      const tag2_ = await dispatch({
         type: 'goodList/createGoodCategoryId',
         payload: { name: children2[children2.length - 1] },
       });
-      await setCategoryId([...categoryId, { id: tempId }]);
-      console.log(tempId);
+      setCategoryId([...categoryId, { id: tag2_.id }]);
     } else if (children2.length < categoryId.length) {
       let tempCategory = JSON.parse(JSON.stringify(categoryId));
       tempCategory.splice(tempCategory.length - 1, 1);
@@ -96,8 +94,8 @@ const index = ({ dispatch, record, usefulRecord, loading, match, tempId, tempId2
           ...values,
           content: title,
           gallery: submitImg,
-          // categories: categoryId,
-          // tags: tagsId,
+          categories: categoryId,
+          tags: tagsId,
         },
         id: usefulRecord.ID,
       },
@@ -118,7 +116,6 @@ const index = ({ dispatch, record, usefulRecord, loading, match, tempId, tempId2
       span: 16,
     },
   };
-  console.log('tagsid', tagsId);
 
   return (
     <Spin spinning={loading}>
