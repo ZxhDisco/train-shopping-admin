@@ -1,6 +1,8 @@
 import { Upload, Icon, Modal } from 'antd';
 import './index.less';
 
+import { connect } from 'umi';
+
 function getBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -14,16 +16,10 @@ class AddGoodPic extends React.Component {
   state = {
     previewVisible: false,
     previewImage: '',
-    fileList: [
-      {
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      },
-      {
-        url:
-          'https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3455184204,2524748306&fm=26&gp=0.jpg',
-      },
-    ],
+    fileList: [],
     imgList: [],
+    uploadList: [],
+    uploadList3: [],
   };
 
   handleCancel = () => this.setState({ previewVisible: false });
@@ -43,16 +39,35 @@ class AddGoodPic extends React.Component {
   };
   handleChange = ({ fileList }) => {
     this.setState({ fileList }, () => {
-      // this.setState(
-      //   {
-      //     imgList: this.state.imgList.push(
-      //       this.state.fileList[this.state.fileList.length - 1]?.response[0],
-      //     ),
-      //   },
-      //   () => {
-      //     console.log(this.state.imgList);
-      //   },
-      // );
+      this.setState(
+        {
+          uploadList: [
+            ...this.state.uploadList,
+            this.state.fileList[this.state.fileList.length - 1]?.response,
+          ],
+        },
+        () => {
+          let uploadList2 = JSON.parse(JSON.stringify(this.state.uploadList));
+          for (let i = 0; i < uploadList2.length; i++) {
+            if (uploadList2[i] === null) {
+              uploadList2.splice(i, 1);
+              i = i - 1; // i - 1 ,因为空元素在数组下标 2 位置，删除空之后，后面的元素要向前补位
+            }
+          }
+          let newArr = [];
+          uploadList2.forEach((item) => {
+            item.forEach((item) => {
+              newArr.push(item);
+            });
+          });
+          this.setState({ uploadList3: [...this.state.uploadList3, ...newArr] }, () => {
+            this.props.dispatch({
+              type: 'goodList/saveuploadList3',
+              payload: this.state.uploadList3,
+            });
+          });
+        },
+      );
     });
   };
   render() {
@@ -81,7 +96,7 @@ class AddGoodPic extends React.Component {
           accept=".jepg,.jpg,.png,.gif"
           multiple
         >
-          {fileList.length >= 8 ? null : uploadButton}
+          {fileList.length >= 30 ? null : uploadButton}
         </Upload>
         <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
           <img alt="example" style={{ width: '100%' }} src={previewImage} />
@@ -90,5 +105,7 @@ class AddGoodPic extends React.Component {
     );
   }
 }
-
-export default AddGoodPic;
+const mapStateToProps = ({ goodList }) => {
+  return {};
+};
+export default connect(mapStateToProps)(AddGoodPic);

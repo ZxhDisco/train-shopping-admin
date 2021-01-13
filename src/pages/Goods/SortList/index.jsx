@@ -77,7 +77,6 @@ const index = ({ categoryList, dispatch }) => {
   const pagination = {
     pageSize: 5,
   };
-  
   //form布局
   const layout = {
     labelCol: { span: 2 },

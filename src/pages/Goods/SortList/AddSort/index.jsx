@@ -23,17 +23,7 @@ const index = ({ dispatch }) => {
       span: 16,
     },
   };
-  const routes = [
-    {
-      breadcrumbName: '首页',
-    },
-    {
-      breadcrumbName: '分类列表',
-    },
-    {
-      breadcrumbName: '新增分类',
-    },
-  ];
+
   //表单提交函数
   const onFinish = (values) => {
     history.push('/Goods/SortList/');
@@ -45,7 +35,7 @@ const index = ({ dispatch }) => {
     });
   };
   return (
-    <PageHeaderWrapper breadcrumb={{ routes }} title="新增分类">
+    <PageHeaderWrapper title="新增分类">
       <Form {...layout} name="basic" onFinish={onFinish}>
         <Card>
           <h3>分类名称</h3>

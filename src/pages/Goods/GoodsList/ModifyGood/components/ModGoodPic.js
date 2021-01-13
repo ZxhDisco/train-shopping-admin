@@ -15,6 +15,7 @@ class ModGoodPic extends React.Component {
   componentDidMount() {
     this.setState({
       fileList: this.props.imgs,
+      uploadList3: this.props.uploadImg,
     });
   }
   state = {
@@ -22,6 +23,8 @@ class ModGoodPic extends React.Component {
     previewImage: '',
     fileList: [],
     imgList: [],
+    uploadList: [],
+    uploadList3: [],
   };
 
   handleCancel = () => this.setState({ previewVisible: false });
@@ -41,16 +44,35 @@ class ModGoodPic extends React.Component {
   };
   handleChange = ({ fileList }) => {
     this.setState({ fileList }, () => {
-      // this.setState(
-      //   {
-      //     imgList: this.state.imgList.push(
-      //       this.state.fileList[this.state.fileList.length - 1]?.response[0],
-      //     ),
-      //   },
-      //   () => {
-      //     console.log(this.state.imgList);
-      //   },
-      // );
+      this.setState(
+        {
+          uploadList: [
+            ...this.state.uploadList,
+            this.state.fileList[this.state.fileList.length - 1]?.response,
+          ],
+        },
+        () => {
+          let uploadList2 = JSON.parse(JSON.stringify(this.state.uploadList));
+          for (let i = 0; i < uploadList2.length; i++) {
+            if (uploadList2[i] === null) {
+              uploadList2.splice(i, 1);
+              i = i - 1; // i - 1 ,因为空元素在数组下标 2 位置，删除空之后，后面的元素要向前补位
+            }
+          }
+          let newArr = [];
+          uploadList2.forEach((item) => {
+            item.forEach((item) => {
+              newArr.push(item);
+            });
+          });
+          this.setState({ uploadList3: [...this.state.uploadList3, ...newArr] }, () => {
+            this.props.dispatch({
+              type: 'goodList/saveuploadList3',
+              payload: this.state.uploadList3,
+            });
+          });
+        },
+      );
     });
   };
   render() {
@@ -71,6 +93,7 @@ class ModGoodPic extends React.Component {
           action="/api/admin/attachments?format=object"
           name="files[]"
           listType="picture-card"
+          disabled={false}
           headers={headers}
           fileList={fileList}
           onPreview={this.handlePreview}
@@ -79,7 +102,7 @@ class ModGoodPic extends React.Component {
           accept=".jepg,.jpg,.png,.gif"
           multiple
         >
-          {fileList.length >= 8 ? null : uploadButton}
+          {fileList.length >= 30 ? null : uploadButton}
         </Upload>
         <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
           <img alt="example" style={{ width: '100%' }} src={previewImage} />
@@ -91,6 +114,7 @@ class ModGoodPic extends React.Component {
 const mapStateToProps = ({ goodList }) => {
   return {
     imgs: goodList.imgs,
+    uploadImg: goodList.uploadImg,
   };
 };
 export default connect(mapStateToProps)(ModGoodPic);

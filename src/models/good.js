@@ -16,8 +16,10 @@ const GlobalModel = {
     recordShow: {},
     usefulRecord: { tags: [], categories: [], gallery: [] },
     imgs: [],
-    tempId: null,
-    tempId2: null,
+    tempId: [],
+    tempId2: [],
+    uploadImg: [],
+    submitImg: [],
   },
   effects: {
     *getProducts(_, { call, put }) {
@@ -54,7 +56,6 @@ const GlobalModel = {
     },
     *searchGood({ payload }, { call, put }) {
       const res = yield call(searchGood, payload);
-      console.log(res, '123');
       yield put({
         type: 'saveSearchGood',
         payload: res,
@@ -73,6 +74,7 @@ const GlobalModel = {
         type: 'saveTempId',
         payload: res,
       });
+      return res;
     },
     *createGoodTagsId({ payload }, { call, put }) {
       const res = yield call(createGoodTagsId, payload);
@@ -80,6 +82,7 @@ const GlobalModel = {
         type: 'saveTempId2',
         payload: res,
       });
+      return res;
     },
   },
   reducers: {
@@ -91,7 +94,7 @@ const GlobalModel = {
     },
     saveGood(state, { payload }) {
       let Imgs = payload.gallery.map((item) => {
-        return { uid: `${item.url}`, url: `${item.url}` };
+        return { uid: item.url, url: item.url };
       });
       let useRecord = {};
       useRecord.title = payload.title;
@@ -107,6 +110,7 @@ const GlobalModel = {
         recordShow: useRecord,
         usefulRecord: payload,
         imgs: Imgs,
+        uploadImg: payload.gallery,
       };
     },
     saveSearchGood(state, { payload }) {
@@ -127,6 +131,13 @@ const GlobalModel = {
       return {
         ...state,
         tempId2: payload.id,
+      };
+    },
+    saveuploadList3(state, { payload }) {
+      console.log(payload);
+      return {
+        ...state,
+        submitImg: payload,
       };
     },
   },

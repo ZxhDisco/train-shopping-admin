@@ -6,8 +6,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import { connect, history } from 'umi';
 import ModGoodPic from './components/ModGoodPic';
 
-const index = ({ dispatch, record, usefulRecord, loading, match, tempId, tempId2 }) => {
-  console.log(usefulRecord);
+const index = ({ dispatch, record, usefulRecord, loading, match, tempId, tempId2, submitImg }) => {
   //富文本赋初值
   const [title, setTitle] = useState(null);
   //标签分类赋初值
@@ -57,12 +56,11 @@ const index = ({ dispatch, record, usefulRecord, loading, match, tempId, tempId2
     let values = String(value);
     children = values.split(',');
     if (children.length > tagsId.length) {
-      dispatch({
+      const tag_ = await dispatch({
         type: 'goodList/createGoodTagsId',
         payload: { name: children[children.length - 1] },
       });
-      console.log(tempId2);
-      await setTagsId([...tagsId, { id: tempId2 + 1 }]);
+      setTagsId([...tagsId, { id: tag_.id }]);
     } else if (children.length < tagsId.length) {
       let tempTags = JSON.parse(JSON.stringify(tagsId));
       tempTags.splice(tempTags.length - 1, 1);
@@ -75,12 +73,11 @@ const index = ({ dispatch, record, usefulRecord, loading, match, tempId, tempId2
     let values_2 = String(value);
     children2 = values_2.split(',');
     if (children2.length > categoryId.length) {
-      dispatch({
+      const tag2_ = await dispatch({
         type: 'goodList/createGoodCategoryId',
         payload: { name: children2[children2.length - 1] },
       });
-      console.log(tempId);
-      await setCategoryId([...categoryId, { id: tempId + 1 }]);
+      setCategoryId([...categoryId, { id: tag2_.id }]);
     } else if (children2.length < categoryId.length) {
       let tempCategory = JSON.parse(JSON.stringify(categoryId));
       tempCategory.splice(tempCategory.length - 1, 1);
@@ -93,8 +90,13 @@ const index = ({ dispatch, record, usefulRecord, loading, match, tempId, tempId2
     dispatch({
       type: 'goodList/updateGood',
       payload: {
-        params: { ...values, content: title },
-        // , categories: categoryId, tags: tagsId
+        params: {
+          ...values,
+          content: title,
+          gallery: submitImg,
+          categories: categoryId,
+          tags: tagsId,
+        },
         id: usefulRecord.ID,
       },
     });
@@ -114,22 +116,10 @@ const index = ({ dispatch, record, usefulRecord, loading, match, tempId, tempId2
       span: 16,
     },
   };
-  const routes = [
-    {
-      breadcrumbName: '首页',
-    },
-    {
-      breadcrumbName: '商品列表',
-    },
-    {
-      breadcrumbName: '编辑商品',
-    },
-  ];
-  console.log('tagsId', tagsId);
-  console.log('categoryId', categoryId);
+
   return (
     <Spin spinning={loading}>
-      <PageHeaderWrapper breadcrumb={{ routes }} title="编辑商品">
+      <PageHeaderWrapper title="编辑商品">
         <Form {...layout} name="basic" form={form} onFinish={onFinish}>
           <Card>
             <h3>基础信息</h3>
@@ -246,6 +236,7 @@ const mapStateToProps = ({ goodList, loading }) => {
     usefulRecord: goodList.usefulRecord,
     tempId: goodList.tempId,
     tempId2: goodList.tempId2,
+    submitImg: goodList.submitImg,
     loading: loading.effects['goodList/getGood'],
   };
 };
