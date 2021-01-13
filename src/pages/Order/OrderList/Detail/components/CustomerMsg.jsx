@@ -44,7 +44,7 @@ const CustomerMsg = ({user}) => {
                     }},
                     subTitle: {},
                 }}
-                rowKey='title'
+                rowKey={row=>row.title}
                 dataSource={data}
             />
         </>

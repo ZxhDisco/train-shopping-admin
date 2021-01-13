@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ProCard from '@ant-design/pro-card';
-import { Button } from 'antd';
+import { Button, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { ModalForm, ProFormText, ProFormCheckbox } from '@ant-design/pro-form';
 import { PlusOutlined } from '@ant-design/icons';
@@ -26,7 +26,7 @@ const index = ({ user, dispatch, match }) => {
   const { post_status, ID } = user;
   const [checked, setIsChecked] = useState(false);
   return (
-    <PageHeaderWrapper title="订单详情">
+    <PageHeaderWrapper title="订单详情" breadcrumb={false}>
       <ModalForm
         title="发货"
         trigger={

@@ -8,7 +8,9 @@ const ReportModel = {
     report: [],
     sales : [],
     visitors: [],
-    hots:[]
+    hots:[],
+    salesNow:[],
+    visitorsNow:[]
   },
   effects: {
     *queryData({ payload }, { call, put }) { 
@@ -20,6 +22,12 @@ const ReportModel = {
       const result = yield call(queryReports,payload)
       yield put({ type: 'saveReports', payload: result });
     },
+    *queryNowData({ payload }, { call, put }) { 
+      const result = yield call(queryReports,payload)
+      console.log(result);
+      yield put({ type: 'saveNowReports', payload: result });
+    },
+
   },
   reducers: {
     detail(state, { payload }){
@@ -34,7 +42,14 @@ const ReportModel = {
                 sales : sale,
                 orders:order,
                 visitors: visit
-
+             }
+    },
+    saveNowReports(state, { payload }){
+      let saleNow =payload[0].data
+      let visitNow = payload[3].data
+      return {  ...state, 
+        salesNow:saleNow,
+        visitorsNow:visitNow
              }
     },
   },
