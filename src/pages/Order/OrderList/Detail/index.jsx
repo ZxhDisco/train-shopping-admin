@@ -13,6 +13,7 @@ import OrderMsg from './components/OrderMsg';
 
 const index = ({ user, dispatch, match }) => {
   const [loading, setLoading] = useState(true)
+  const { reload , setReload } = useState(1)
   useEffect(async() => {
     await dispatch({
       type: 'order/getDetail',
@@ -21,8 +22,8 @@ const index = ({ user, dispatch, match }) => {
       },
     });
     setLoading(false)
-  }, [reload]);
-  const { reload , setRelaod } = useState(false)
+  }, [loading]);
+  
   const { post_status, ID } = user;
   const [checked, setIsChecked] = useState(false);
   return (
@@ -56,8 +57,8 @@ const index = ({ user, dispatch, match }) => {
               params2: { trackno: express, sendemail: checked },
             },
           });
-          setReload(!reload)
-          return true;
+          setLoading(true)
+          return true
         }}
       >
         <div style={{ display: 'flex' }}>

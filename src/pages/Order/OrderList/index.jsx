@@ -47,7 +47,7 @@ const TableList = ({ order, dispatch }) => {
           status: 'wc-cancelled',
         },
         'wc-processing': {
-          text: <Badge status="processing" text="运行中" />,
+          text: <Badge status="processing" text="进行中" />,
           status: 'wc-processing',
         },
         'wc-completed': {
@@ -126,7 +126,7 @@ const TableList = ({ order, dispatch }) => {
                   status: 'wc-cancelled',
                 },
                 'wc-processing': {
-                  text: <Badge status="processing" text="运行中" />,
+                  text: <Badge status="processing" text="进行中" />,
                   status: 'wc-processing',
                 },
                 'wc-completed': {
@@ -193,7 +193,7 @@ const TableList = ({ order, dispatch }) => {
                     }
                   });
                   if (count > 0) {
-                    message.error('只能修改运行中的订单，请重新选择');
+                    message.error('只能修改进行中的订单，请重新选择');
                   } else {
                     dispatch({
                       type: 'order/updateOrderStatus',
